@@ -1,10 +1,10 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { VariableValue } from '../story/types';
 
 @Entity()
 export class PlayerState {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'json' })
   state: Record<string, VariableValue>;

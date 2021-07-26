@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Sequence } from './Sequence';
 
 export enum ActionNodeType {
@@ -8,8 +8,8 @@ export enum ActionNodeType {
 
 @Entity()
 export class ActionNode {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   order: number;

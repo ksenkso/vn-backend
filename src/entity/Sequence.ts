@@ -1,10 +1,17 @@
-import { Column, Entity, ManyToOne, ObjectID, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Story } from './Story';
+import { SequenceNode } from './SequenceNode';
 
 @Entity()
 export class Sequence {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   slug: string;
@@ -14,4 +21,7 @@ export class Sequence {
 
   @ManyToOne(() => Story)
   story: Story;
+
+  @OneToMany(() => SequenceNode, (node) => node.sequence)
+  nodes: SequenceNode[];
 }

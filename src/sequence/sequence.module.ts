@@ -4,9 +4,10 @@ import { SequenceService } from './sequence.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Story } from '../entity/Story';
 import { Sequence } from '../entity/Sequence';
+import { SequenceNode } from '../entity/SequenceNode';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Story, Sequence])],
+  imports: [TypeOrmModule.forFeature([Story, Sequence, SequenceNode])],
   controllers: [SequenceController],
   providers: [SequenceService],
 })

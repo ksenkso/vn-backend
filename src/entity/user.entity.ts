@@ -6,8 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  ObjectID,
-  ObjectIdColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
@@ -21,8 +20,8 @@ export class User {
     }
   }
 
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   username: string;

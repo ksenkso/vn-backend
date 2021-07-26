@@ -1,10 +1,10 @@
 import { User } from './user.entity';
-import { Column, Entity, ManyToMany, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Role {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;

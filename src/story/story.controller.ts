@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateStoryDto } from './dto/story.dto';
 import { StoryService } from './story.service';
 import { CreateSequenceDto } from './dto/sequence.dto';
-import { ObjectID } from 'typeorm';
 
 @Controller('story')
 export class StoryController {
@@ -19,7 +18,7 @@ export class StoryController {
   }
 
   @Get('/:id')
-  get(@Param('id') id: ObjectID) {
+  get(@Param('id') id: number) {
     return this.storyService.getById(id);
   }
 }

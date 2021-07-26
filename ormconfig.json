@@ -1,15 +1,12 @@
 {
-   "type": "mongodb",
-   "uri": "mongodb://vn:vn@localhost:27017",
+   "type": "postgres",
    "host": "localhost",
-   "port": 27017,
+   "port": 5432,
    "username": "vn",
-   "password": "vn",
+   "password": "vn_password",
    "database": "vn",
-   "authSource": "admin",
-   "useNewUrlParser": true,
-   "useUnifiedTopology": true,
    "logging": false,
+   "synchronize": true,
    "entities": [
       "dist/entity/**/*.js"
    ],

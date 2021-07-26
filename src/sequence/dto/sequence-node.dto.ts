@@ -4,13 +4,24 @@ export enum SequenceNodeType {
   Animation,
 }
 
+export type SequenceNodeDescription =
+  | TextNodeDescription
+  | SoundNodeDescription;
+
 export class CreateNodeDto {
   type: SequenceNodeType;
-  description: CreateTextNodeDto | CreateSoundNodeDto | CreateAnimationNodeDto;
+  description: SequenceNodeDescription;
 }
 
-export class CreateTextNodeDto {}
+export class TextNodeDescription {
+  speaker: string;
+  text: string;
+}
 
-export class CreateSoundNodeDto {}
+export class SoundNodeDescription {
+  sound: string;
+}
 
-export class CreateAnimationNodeDto {}
+export class AnimationNodeDescription {
+  order: number;
+}

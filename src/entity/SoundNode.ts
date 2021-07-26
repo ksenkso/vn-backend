@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Sequence } from './Sequence';
 
 @Entity()
 export class SoundNode {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   order: number;

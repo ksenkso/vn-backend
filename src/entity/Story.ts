@@ -2,8 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ObjectID,
-  ObjectIdColumn,
+  PrimaryGeneratedColumn,
   OneToOne,
 } from 'typeorm';
 import { User } from './user.entity';
@@ -11,8 +10,8 @@ import { Sequence } from './Sequence';
 
 @Entity()
 export class Story {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectID, Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Story } from '../entity/Story';
 import { CreateStoryDto, UpdateStoryDto } from './dto/story.dto';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
@@ -16,7 +16,7 @@ export class StoryService {
     private sequenceRepository: Repository<Sequence>,
   ) {}
 
-  getById(id: ObjectID): Promise<Story | undefined> {
+  getById(id: number): Promise<Story | undefined> {
     return this.storyRepository.findOne(id);
   }
 
