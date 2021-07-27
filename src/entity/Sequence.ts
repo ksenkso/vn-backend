@@ -16,10 +16,10 @@ export class Sequence {
   @Column()
   slug: string;
 
-  @Column()
+  @Column({ nullable: true })
   storyId: number;
 
-  @ManyToOne(() => Story)
+  @ManyToOne(() => Story, { onDelete: 'CASCADE' })
   story: Story;
 
   @OneToMany(() => SequenceNode, (node) => node.sequence)

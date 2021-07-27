@@ -1,7 +1,9 @@
 export class CreateStoryDto {
   name: string;
+  rootId?: number;
 }
 
 export class UpdateStoryDto {
-  name: string;
+  name?: string;
+  rootId?: number;
 }

@@ -22,6 +22,8 @@ export class SequenceNode {
   @Column()
   sequenceId: number;
 
-  @ManyToOne(() => Sequence, (sequence) => sequence.nodes)
+  @ManyToOne(() => Sequence, (sequence) => sequence.nodes, {
+    onDelete: 'CASCADE',
+  })
   sequence: Sequence;
 }

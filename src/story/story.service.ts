@@ -6,6 +6,7 @@ import { CreateStoryDto, UpdateStoryDto } from './dto/story.dto';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 import { CreateSequenceDto } from './dto/sequence.dto';
 import { Sequence } from '../entity/Sequence';
+import { SequenceService } from '../sequence/sequence.service';
 
 @Injectable()
 export class StoryService {
@@ -14,6 +15,7 @@ export class StoryService {
     private storyRepository: Repository<Story>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
+    private sequenceService: SequenceService,
   ) {}
 
   getById(id: number): Promise<Story | undefined> {
@@ -27,6 +29,7 @@ export class StoryService {
   }
 
   update(id: number, storyDto: UpdateStoryDto): Promise<UpdateResult> {
+    // potential bug: sequence can be in a different story, so check needed
     return this.storyRepository.update(id, storyDto);
   }
 
@@ -47,6 +50,6 @@ export class StoryService {
   async getRoot(storyId: number): Promise<Sequence | undefined> {
     const story = await this.storyRepository.findOne(storyId);
 
-    return this.sequenceRepository.findOne(story.rootId);
+    return this.sequenceService.get(story.rootId);
   }
 }

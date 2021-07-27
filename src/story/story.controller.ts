@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateStoryDto } from './dto/story.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { CreateStoryDto, UpdateStoryDto } from './dto/story.dto';
 import { StoryService } from './story.service';
 import { CreateSequenceDto } from './dto/sequence.dto';
 
@@ -20,5 +28,20 @@ export class StoryController {
   @Get('/:id')
   get(@Param('id') id: number) {
     return this.storyService.getById(id);
+  }
+
+  @Get('/:id/root')
+  getRoot(@Param('id') id: number) {
+    return this.storyService.getRoot(id);
+  }
+
+  @Patch('/:id')
+  update(@Param('id') id: number, @Body() updateStoryDto: UpdateStoryDto) {
+    return this.storyService.update(id, updateStoryDto);
+  }
+
+  @Delete('/:id')
+  delete(@Param('id') id: number) {
+    return this.storyService.delete(id);
   }
 }
