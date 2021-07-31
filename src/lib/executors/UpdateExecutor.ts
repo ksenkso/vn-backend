@@ -1,10 +1,10 @@
 import { ExecutionContext } from '../ExecutionContext';
 import { UpdateExpression } from '@babel/types';
-import { locate } from '../utils';
+import { locate, Types } from '../utils';
 
 export class UpdateExecutor {
   static run(context: ExecutionContext, expression: UpdateExpression) {
-    if (expression.argument.type !== 'Identifier') {
+    if (expression.argument.type !== Types.Identifier) {
       throw new TypeError(
         'Cannot update non-identifier at ' + locate(expression.loc),
       );

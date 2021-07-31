@@ -5,21 +5,21 @@ import { BinaryExpressionExecutor } from './BinaryExpressionExecutor';
 import { LogicExecutor } from './LogicExecutor';
 import { LiteralExecutor } from './LiteralExecutor';
 import { AssignmentOperatorExecutor } from './AssignmentOperatorExecutor';
-import { locate } from '../utils';
+import { locate, Types } from '../utils';
 
 export class ExpressionExecutor {
   static run(context: ExecutionContext, expression: Expression): VariableValue {
     switch (expression.type) {
-      case 'Identifier':
+      case Types.Identifier:
         return context.getVariable(expression).value;
-      case 'BinaryExpression':
+      case Types.BinaryExpression:
         return BinaryExpressionExecutor.run(context, expression);
-      case 'LogicalExpression':
+      case Types.LogicalExpression:
         return LogicExecutor.run(context, expression);
-      case 'NumericLiteral':
-      case 'BooleanLiteral':
+      case Types.NumericLiteral:
+      case Types.BooleanLiteral:
         return LiteralExecutor.run(context, expression);
-      case 'AssignmentExpression':
+      case Types.AssignmentExpression:
         return AssignmentOperatorExecutor.run(context, expression);
       default:
         throw new TypeError(

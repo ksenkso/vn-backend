@@ -1,6 +1,6 @@
 import { Variable, VariableValue } from './types';
 import { Identifier, Program, ReturnStatement, Statement } from '@babel/types';
-import { locate } from './utils';
+import { locate, Types } from './utils';
 import { FunctionExecutor } from './executors/FunctionExecutor';
 import { ConditionExecutor } from './executors/ConditionExecutor';
 import { ExpressionStatementExecutor } from './executors/ExpressionStatementExecutor';
@@ -18,19 +18,19 @@ export class ExecutionContext {
     }
 
     switch (statement.type) {
-      case 'FunctionDeclaration': {
+      case Types.FunctionDeclaration: {
         return FunctionExecutor.run(this, statement);
       }
-      case 'IfStatement': {
+      case Types.IfStatement: {
         return ConditionExecutor.run(this, statement);
       }
-      case 'ExpressionStatement': {
+      case Types.ExpressionStatement: {
         return ExpressionStatementExecutor.run(this, statement);
       }
-      case 'ReturnStatement': {
+      case Types.ReturnStatement: {
         return (statement as ReturnStatement).argument;
       }
-      case 'BlockStatement': {
+      case Types.BlockStatement: {
         let result;
         statement.body.forEach((statement) => {
           result = this.run(statement);

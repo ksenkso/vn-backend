@@ -10,6 +10,7 @@ import { StoryModule } from './story/story.module';
 import { SequenceModule } from './sequence/sequence.module';
 import { CommandModule } from 'nestjs-command';
 import { UserCommand } from './seed/users/command';
+import { ActionModule } from './action/action.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserCommand } from './seed/users/command';
     StoryModule,
     SequenceModule,
     CommandModule,
+    ActionModule,
   ],
   controllers: [AppController],
   providers: [AppService, UserCommand],

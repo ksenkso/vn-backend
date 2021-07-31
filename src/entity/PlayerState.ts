@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { VariableValue } from '../story/types';
+import { VariableValue } from '../lib/types';
 
 @Entity()
 export class PlayerState {

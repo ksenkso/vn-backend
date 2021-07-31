@@ -5,25 +5,25 @@ import { AssignmentOperatorExecutor } from './AssignmentOperatorExecutor';
 import { LiteralExecutor } from './LiteralExecutor';
 import { LogicExecutor } from './LogicExecutor';
 import { UpdateExecutor } from './UpdateExecutor';
-import { locate } from '../utils';
+import { locate, Types } from '../utils';
 
 export class ExpressionStatementExecutor {
   static run(context: ExecutionContext, statement: ExpressionStatement) {
     switch (statement.expression.type) {
-      case 'BinaryExpression': {
+      case Types.BinaryExpression: {
         return BinaryExpressionExecutor.run(context, statement.expression);
       }
-      case 'AssignmentExpression': {
+      case Types.AssignmentExpression: {
         return AssignmentOperatorExecutor.run(context, statement.expression);
       }
-      case 'NumericLiteral':
-      case 'BooleanLiteral': {
+      case Types.NumericLiteral:
+      case Types.BooleanLiteral: {
         return LiteralExecutor.run(context, statement.expression);
       }
-      case 'LogicalExpression': {
+      case Types.LogicalExpression: {
         return LogicExecutor.run(context, statement.expression);
       }
-      case 'UpdateExpression': {
+      case Types.UpdateExpression: {
         return UpdateExecutor.run(context, statement.expression);
       }
       default:

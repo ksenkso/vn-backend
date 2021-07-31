@@ -1,7 +1,7 @@
 import { ExecutionContext } from '../ExecutionContext';
 import { AssignmentExpression } from '@babel/types';
 import { VariableValue } from '../types';
-import { locate } from '../utils';
+import { locate, Types } from '../utils';
 import { ExpressionExecutor } from './ExpressionExecutor';
 
 export class AssignmentOperatorExecutor {
@@ -13,7 +13,7 @@ export class AssignmentOperatorExecutor {
       case '=': {
         const left = operator.left;
         const right = ExpressionExecutor.run(context, operator.right);
-        if (left.type === 'Identifier') {
+        if (left.type === Types.Identifier) {
           return context.setVariable(left, right);
         } else {
           throw new TypeError(
@@ -25,7 +25,7 @@ export class AssignmentOperatorExecutor {
       case '+=': {
         const left = operator.left;
         const right = ExpressionExecutor.run(context, operator.right);
-        if (left.type === 'Identifier') {
+        if (left.type === Types.Identifier) {
           const variable = context.getVariable(left);
           return ((variable.value as number) += right as any);
         } else {

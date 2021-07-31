@@ -12,9 +12,6 @@ export class ActionNode {
   id: number;
 
   @Column()
-  order: number;
-
-  @Column()
   type: ActionNodeType;
 
   @Column()
@@ -25,4 +22,12 @@ export class ActionNode {
 
   @ManyToOne(() => Sequence)
   sequence: Sequence;
+
+  withoutProgram() {
+    return {
+      id: this.id,
+      type: this.type,
+      sequenceId: this.sequenceId,
+    };
+  }
 }

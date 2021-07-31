@@ -1,6 +1,6 @@
 import { VariableOperator, VariableValue } from '../types';
 import { BinaryExpression, Expression } from '@babel/types';
-import { locate } from '../utils';
+import { locate, Types } from '../utils';
 import { ExecutionContext } from '../ExecutionContext';
 import { ExpressionExecutor } from './ExpressionExecutor';
 
@@ -39,7 +39,7 @@ export class ArithmeticExpressionExecutor {
     expression: BinaryExpression,
   ): VariableValue {
     const left: Expression =
-      expression.left.type === 'PrivateName'
+      expression.left.type === Types.PrivateName
         ? expression.left.id
         : expression.left;
     const right: Expression = expression.right;
