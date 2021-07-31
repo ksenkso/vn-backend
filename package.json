@@ -33,6 +33,8 @@
     "@nestjs/platform-express": "^7.6.13",
     "@nestjs/typeorm": "^7.1.5",
     "bcrypt": "^5.0.1",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "mongodb": "^3.6.10",
     "nestjs-command": "^2.0.0",
     "passport": "^0.4.1",

@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Story } from './Story';
 import { SequenceNode } from './SequenceNode';
+import { Choice } from './Choice';
 
 @Entity()
 export class Sequence {
@@ -24,4 +25,7 @@ export class Sequence {
 
   @OneToMany(() => SequenceNode, (node) => node.sequence)
   nodes: SequenceNode[];
+
+  @OneToMany(() => Choice, (choice) => choice.sequence)
+  choices: Choice[];
 }
