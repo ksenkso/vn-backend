@@ -4,9 +4,11 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Sequence } from './Sequence';
+import { PlayerState } from './PlayerState';
 
 @Entity()
 export class Story {
@@ -26,4 +28,7 @@ export class Story {
   @OneToOne(() => Sequence)
   @JoinColumn()
   root: Sequence;
+
+  @OneToMany(() => PlayerState, (state) => state.story)
+  states: PlayerState[];
 }

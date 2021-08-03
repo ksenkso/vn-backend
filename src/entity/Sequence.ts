@@ -1,8 +1,10 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Story } from './Story';
@@ -23,9 +25,13 @@ export class Sequence {
   @ManyToOne(() => Story, { onDelete: 'CASCADE' })
   story: Story;
 
+  @Column({ nullable: true })
+  choiceId: number | null;
+
+  @OneToOne(() => Choice)
+  @JoinColumn()
+  choice: Choice;
+
   @OneToMany(() => SequenceNode, (node) => node.sequence)
   nodes: SequenceNode[];
-
-  @OneToMany(() => Choice, (choice) => choice.sequence)
-  choices: Choice[];
 }

@@ -24,8 +24,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, id: user.id };
-    return this.createPayload(payload);
+    return this.createPayload(user);
   }
 
   async refresh(accessToken: string, refreshToken?: string) {
@@ -50,13 +49,19 @@ export class AuthService {
     return this.createPayload({ username, id: sub });
   }
 
-  private async createPayload({
-    id,
-    username,
-  }): Promise<{ accessToken: string; refreshToken: string }> {
+  private async createPayload(
+    user: any,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     return {
-      accessToken: this.jwtService.sign({ username, sub: id }),
-      refreshToken: this.jwtService.sign({ sub: id }, { expiresIn: '30 days' }),
+      accessToken: this.jwtService.sign({
+        sub: user.id,
+        username: user.username,
+        roles: user.roles,
+      }),
+      refreshToken: this.jwtService.sign(
+        { sub: user.id },
+        { expiresIn: '30 days' },
+      ),
     };
   }
 }

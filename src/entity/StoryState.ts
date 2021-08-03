@@ -1,28 +1,14 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Variable } from '../lib/types';
-import { User } from './user.entity';
 import { Story } from './Story';
 
 @Entity()
-export class PlayerState {
+export class StoryState {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'json' })
   state: Record<string, Variable>;
-
-  @Column()
-  userId: number;
-
-  @ManyToOne(() => User, (user) => user.states)
-  @JoinColumn()
-  user: User;
 
   @Column()
   storyId: number;

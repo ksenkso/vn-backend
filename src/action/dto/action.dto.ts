@@ -1,9 +1,10 @@
 import { ActionNodeType } from '../../entity/ActionNode';
+import { File } from '@babel/types';
 
 export class CreateActionDto {
   sequenceId: number;
   type: ActionNodeType;
-  program: string;
+  program: File;
 }
 
 export class UpdateActionDto {

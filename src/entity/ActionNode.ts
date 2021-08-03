@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Sequence } from './Sequence';
+import { File } from '@babel/types';
 
 export enum ActionNodeType {
   ENTER = 'ENTER',
@@ -14,8 +15,8 @@ export class ActionNode {
   @Column()
   type: ActionNodeType;
 
-  @Column()
-  program: string;
+  @Column({ type: 'json', nullable: true })
+  program: File;
 
   @Column()
   sequenceId: number;

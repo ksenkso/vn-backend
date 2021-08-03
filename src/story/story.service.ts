@@ -47,7 +47,7 @@ export class StoryService {
     return this.storyRepository.update(storyId, { rootId: sequenceId });
   }
 
-  async getRoot(storyId: number): Promise<Sequence | undefined> {
+  async getRoot(storyId: number): Promise<Sequence | void> {
     const story = await this.storyRepository.findOne(storyId);
 
     return this.sequenceService.get(story.rootId);

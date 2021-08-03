@@ -1,5 +1,5 @@
 import { Variable, VariableValue } from './types';
-import { Identifier, Program, ReturnStatement, Statement } from '@babel/types';
+import { File, Identifier, ReturnStatement, Statement } from '@babel/types';
 import { locate, Types } from './utils';
 import { FunctionExecutor } from './executors/FunctionExecutor';
 import { ConditionExecutor } from './executors/ConditionExecutor';
@@ -8,8 +8,8 @@ import { ExpressionStatementExecutor } from './executors/ExpressionStatementExec
 export class ExecutionContext {
   constructor(private variables: Map<string, Variable>) {}
 
-  runProgram(program: Program) {
-    return this.run(program.body[0]);
+  runProgram(program: File) {
+    return this.run(program.program.body[0]);
   }
 
   run(statement?: Statement | null): any {

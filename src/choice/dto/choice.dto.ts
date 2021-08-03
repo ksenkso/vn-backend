@@ -1,18 +1,17 @@
-export class ChoiceCreateDto {
+export class CreateChoiceDto {
   title: string;
-  sequenceId: number;
-  options?: Omit<ChoiceOptionCreateDto, 'choiceId'>[];
+  options?: Omit<CreateChoiceOptionDto, 'choiceId'>[];
 }
 
-export class ChoiceUpdateDto {
+export class UpdateChoiceDto {
   title: string;
 }
 
-export class ChoiceOptionCreateDto {
+export class CreateChoiceOptionDto {
   title: string;
   choiceId: number;
 }
 
-export class ChoiceOptionUpdateDto {
+export class UpdateChoiceOptionDto {
   title: string;
 }

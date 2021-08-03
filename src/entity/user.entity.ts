@@ -6,8 +6,10 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PlayerState } from './PlayerState';
 
 @Entity()
 export class User {
@@ -33,6 +35,9 @@ export class User {
   @JoinTable()
   roles: Role[];
 
+  @OneToMany(() => PlayerState, (state) => state.user)
+  states: PlayerState[];
+
   @BeforeUpdate()
   async updatePassword(...args: any) {
     console.log('UPDATE!!!');
@@ -50,7 +55,9 @@ export class User {
 
   withoutPassword() {
     return {
+      id: this.id,
       username: this.username,
+      roles: this.roles,
     };
   }
 }

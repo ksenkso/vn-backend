@@ -12,6 +12,7 @@ import { CommandModule } from 'nestjs-command';
 import { UserCommand } from './seed/users/command';
 import { ActionModule } from './action/action.module';
 import { ChoiceModule } from './choice/choice.module';
+import { StateModule } from './state/state.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ChoiceModule } from './choice/choice.module';
     CommandModule,
     ActionModule,
     ChoiceModule,
+    StateModule,
   ],
   controllers: [AppController],
   providers: [AppService, UserCommand],

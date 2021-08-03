@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Choice } from './Choice';
 
 @Entity()
@@ -12,8 +18,9 @@ export class ChoiceOption {
   @Column()
   choiceId: number;
 
-  @OneToMany(() => Choice, (choice) => choice.options, {
+  @ManyToOne(() => Choice, (choice) => choice.options, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   choice: Choice;
 }
