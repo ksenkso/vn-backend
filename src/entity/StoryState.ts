@@ -2,8 +2,16 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Variable } from '../lib/types';
 import { Story } from './Story';
 
+export enum InternalVariables {
+  Choice = 'choice',
+  Sequence = 'sequence',
+}
+
 @Entity()
 export class StoryState {
+  // add state validation
+  static readonly INTERNAL_NAMES = new Set(Object.values(InternalVariables));
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -6,12 +6,6 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { CreateNodeDto } from './dto/sequence-node.dto';
 import { SequenceNode } from '../entity/SequenceNode';
 import { Story } from '../entity/Story';
-import {
-  CreateChoiceDto,
-  CreateChoiceOptionDto,
-} from '../choice/dto/choice.dto';
-import { Choice } from '../entity/Choice';
-import { ChoiceOption } from '../entity/ChoiceOption';
 
 @Injectable()
 export class SequenceService {
@@ -22,10 +16,6 @@ export class SequenceService {
     private nodes: Repository<SequenceNode>,
     @InjectRepository(Story)
     private stories: Repository<Story>,
-    @InjectRepository(Choice)
-    private choices: Repository<Choice>,
-    @InjectRepository(ChoiceOption)
-    private choiceOptions: Repository<ChoiceOption>,
   ) {}
 
   async create(sequenceDto: CreateSequenceDto): Promise<Sequence> {
@@ -76,26 +66,5 @@ export class SequenceService {
           console.log(error.query, error.parameters);
         }
       });
-  }
-
-  async addChoice(sequenceId: number, choiceDto: CreateChoiceDto) {
-    const choice = this.choices.create(choiceDto);
-    const createdChoice = await this.choices.save(choice);
-    await this.sequences.update(sequenceId, { choiceId: createdChoice.id });
-
-    if (choiceDto.options) {
-      choiceDto.options.forEach((option: CreateChoiceOptionDto) => {
-        option.choiceId = createdChoice.id;
-      });
-      let options = this.choiceOptions.create(choiceDto.options);
-      options = await this.choiceOptions.save(options);
-
-      return {
-        ...createdChoice,
-        options,
-      };
-    }
-
-    return createdChoice;
   }
 }

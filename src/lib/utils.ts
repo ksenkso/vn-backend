@@ -18,6 +18,7 @@ export enum Types {
   FunctionDeclaration = 'FunctionDeclaration',
   BooleanLiteral = 'BooleanLiteral',
   NumericLiteral = 'NumericLiteral',
+  StringLiteral = 'StringLiteral',
   LogicalExpression = 'LogicalExpression',
   UpdateExpression = 'UpdateExpression',
   PrivateName = 'PrivateName',

@@ -1,5 +1,5 @@
-export type VariableType = 'number' | 'boolean';
-export type VariableValue = number | boolean;
+export type VariableType = 'number' | 'boolean' | 'string';
+export type VariableValue = string | number | boolean | null;
 export interface Variable {
   name: string;
   type: VariableType;

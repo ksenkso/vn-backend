@@ -6,8 +6,11 @@ import { ActionNode } from '../entity/ActionNode';
 import { NodePath } from '@babel/core';
 import { ExecutionContext } from '../lib/ExecutionContext';
 import { PlayerState } from '../entity/PlayerState';
+import { PlayerChoice } from '../entity/PlayerChoice';
 
 export class InvalidProgramError extends Error {
+  public statusCode = 422;
+  public message = 'Incorrect program';
   constructor(public readonly node: NodePath) {
     super();
   }
@@ -20,6 +23,8 @@ export class ActionService {
     private actions: Repository<ActionNode>,
     @InjectRepository(PlayerState)
     private playerStates: Repository<PlayerState>,
+    @InjectRepository(PlayerChoice)
+    private playerChoices: Repository<PlayerChoice>,
   ) {}
 
   async create(actionDto: CreateActionDto) {
@@ -38,10 +43,22 @@ export class ActionService {
         storyId: action.sequence.storyId,
       },
     });
+    const playerChoice = await this.playerChoices.findOne({
+      where: {
+        choiceId: action.sequence.choiceId,
+        userId,
+      },
+      relations: ['choice', 'option'],
+    });
     const variableMap = playerState.toMap();
-    const context = new ExecutionContext(variableMap);
+    const context = new ExecutionContext(
+      variableMap,
+      action.sequence,
+      playerChoice.option,
+    );
     context.runProgram(action.program);
     playerState.setState(variableMap);
+
     return await this.playerStates.save(playerState);
   }
 }

@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PlayerState } from './PlayerState';
+import { PlayerChoice } from './PlayerChoice';
 
 @Entity()
 export class User {
@@ -37,6 +38,9 @@ export class User {
 
   @OneToMany(() => PlayerState, (state) => state.user)
   states: PlayerState[];
+
+  @OneToMany(() => PlayerChoice, (playerChoice) => playerChoice.user)
+  playerChoices: PlayerChoice[];
 
   @BeforeUpdate()
   async updatePassword(...args: any) {

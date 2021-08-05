@@ -16,6 +16,7 @@ export class ExpressionStatementExecutor {
       case Types.AssignmentExpression: {
         return AssignmentOperatorExecutor.run(context, statement.expression);
       }
+      case Types.StringLiteral:
       case Types.NumericLiteral:
       case Types.BooleanLiteral: {
         return LiteralExecutor.run(context, statement.expression);

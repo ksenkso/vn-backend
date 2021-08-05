@@ -16,6 +16,7 @@ export class ExpressionExecutor {
         return BinaryExpressionExecutor.run(context, expression);
       case Types.LogicalExpression:
         return LogicExecutor.run(context, expression);
+      case Types.StringLiteral:
       case Types.NumericLiteral:
       case Types.BooleanLiteral:
         return LiteralExecutor.run(context, expression);

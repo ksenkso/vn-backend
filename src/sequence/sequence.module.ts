@@ -7,6 +7,8 @@ import { Sequence } from '../entity/Sequence';
 import { SequenceNode } from '../entity/SequenceNode';
 import { Choice } from '../entity/Choice';
 import { ChoiceOption } from '../entity/ChoiceOption';
+import { ChoiceService } from '../choice/choice.service';
+import { PlayerChoice } from '../entity/PlayerChoice';
 
 @Module({
   imports: [
@@ -16,9 +18,10 @@ import { ChoiceOption } from '../entity/ChoiceOption';
       SequenceNode,
       Choice,
       ChoiceOption,
+      PlayerChoice,
     ]),
   ],
   controllers: [SequenceController],
-  providers: [SequenceService],
+  providers: [SequenceService, ChoiceService],
 })
 export class SequenceModule {}

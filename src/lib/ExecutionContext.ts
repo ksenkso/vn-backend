@@ -4,9 +4,16 @@ import { locate, Types } from './utils';
 import { FunctionExecutor } from './executors/FunctionExecutor';
 import { ConditionExecutor } from './executors/ConditionExecutor';
 import { ExpressionStatementExecutor } from './executors/ExpressionStatementExecutor';
+import { Sequence } from '../entity/Sequence';
+import { ChoiceOption } from '../entity/ChoiceOption';
+import { InternalVariables } from '../entity/StoryState';
 
 export class ExecutionContext {
-  constructor(private variables: Map<string, Variable>) {}
+  constructor(
+    private variables: Map<string, Variable>,
+    private sequence: Sequence,
+    private choiceOption?: ChoiceOption,
+  ) {}
 
   runProgram(program: File) {
     return this.run(program.program.body[0]);
@@ -46,12 +53,29 @@ export class ExecutionContext {
   }
 
   getVariable(name: Identifier): Variable {
-    if (!this.variables.has(name.name)) {
-      throw new ReferenceError(
-        `Variable is not defined: '${name.name}' at ${locate(name.loc)}`,
-      );
+    if (this.variables.has(name.name)) {
+      return this.variables.get(name.name);
     }
-    return this.variables.get(name.name);
+
+    if (name.name === InternalVariables.Choice && this.choiceOption) {
+      return {
+        name: InternalVariables.Choice,
+        type: 'string',
+        value: this.choiceOption.slug,
+      };
+    }
+
+    if (name.name === InternalVariables.Sequence) {
+      return {
+        name: InternalVariables.Sequence,
+        type: 'string',
+        value: this.sequence.slug,
+      };
+    }
+
+    throw new ReferenceError(
+      `Variable is not defined: '${name.name}' at ${locate(name.loc)}`,
+    );
   }
 
   getVariableByName(name: string): Variable | undefined {
