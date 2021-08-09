@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Sequence } from './Sequence';
 
 @Entity()
-export class RouteNode {
+export class RouterNode {
   @PrimaryGeneratedColumn()
   id: number;
 
