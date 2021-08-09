@@ -1,5 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Sequence } from './Sequence';
+import { RouteCondition } from './RouteCondition';
+import { OneToMany } from 'typeorm';
 
 @Entity()
 export class RouterNode {
@@ -7,14 +9,11 @@ export class RouterNode {
   id: number;
 
   @Column()
-  order: number;
-
-  @Column()
-  program: string;
-
-  @Column()
   sequenceId: number;
 
   @ManyToOne(() => Sequence)
   sequence: Sequence;
+
+  @OneToMany(() => RouteCondition, (condition) => condition.router)
+  conditions: RouteCondition[];
 }

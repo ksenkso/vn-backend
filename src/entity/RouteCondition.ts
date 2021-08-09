@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Expression } from '@babel/types';
 import { RouterNode } from './RouterNode';
 import { Sequence } from './Sequence';
+import { File } from '@babel/types';
 
 @Entity()
 export class RouteCondition {
@@ -9,12 +9,12 @@ export class RouteCondition {
   id: number;
 
   @Column({ type: 'json' })
-  condition: Expression;
+  condition: File;
 
   @Column()
   routerId: number;
 
-  @ManyToOne(() => RouterNode)
+  @ManyToOne(() => RouterNode, (router) => router.conditions)
   router: RouterNode;
 
   @Column()
