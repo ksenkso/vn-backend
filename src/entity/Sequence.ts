@@ -10,6 +10,7 @@ import {
 import { Story } from './Story';
 import { SequenceNode } from './SequenceNode';
 import { Choice } from './Choice';
+import { RouterNode } from './RouterNode';
 
 @Entity()
 export class Sequence {
@@ -34,4 +35,7 @@ export class Sequence {
 
   @OneToMany(() => SequenceNode, (node) => node.sequence)
   nodes: SequenceNode[];
+
+  @OneToOne(() => RouterNode, (routerNode) => routerNode.sequence)
+  router: RouterNode;
 }

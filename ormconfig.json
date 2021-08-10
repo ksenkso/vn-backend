@@ -5,7 +5,7 @@
    "username": "vn",
    "password": "vn_password",
    "database": "vn",
-   "logging": false,
+   "logging": ["query", "error"],
    "synchronize": true,
    "entities": [
       "dist/entity/**/*.js"

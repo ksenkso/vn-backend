@@ -1,7 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { OneToMany } from 'typeorm';
+import { OneToOne } from 'typeorm';
+import { JoinColumn } from 'typeorm';
 import { Sequence } from './Sequence';
 import { RouteCondition } from './RouteCondition';
-import { OneToMany } from 'typeorm';
 
 @Entity()
 export class RouterNode {
@@ -11,7 +13,8 @@ export class RouterNode {
   @Column()
   sequenceId: number;
 
-  @ManyToOne(() => Sequence)
+  @OneToOne(() => Sequence, (sequence) => sequence.router)
+  @JoinColumn()
   sequence: Sequence;
 
   @OneToMany(() => RouteCondition, (condition) => condition.router)
