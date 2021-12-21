@@ -3,6 +3,9 @@ import { RouterNode } from './RouterNode';
 import { Sequence } from './Sequence';
 import { File } from '@babel/types';
 
+/**
+ * Описывает условие перехода на Sequence с sequenceId, выполняя программу condition
+ */
 @Entity()
 export class RouteCondition {
   @PrimaryGeneratedColumn()
