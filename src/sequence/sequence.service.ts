@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSequenceDto } from '../story/dto/sequence.dto';
+import {
+  CreateSequenceDto,
+  UpdateSequenceDto,
+} from '../story/dto/sequence.dto';
 import { Sequence } from '../entity/Sequence';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -66,5 +69,9 @@ export class SequenceService {
           console.log(error.query, error.parameters);
         }
       });
+  }
+
+  async update(id: number, sequenceDto: UpdateSequenceDto) {
+    return this.sequences.update(id, sequenceDto);
   }
 }

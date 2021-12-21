@@ -11,6 +11,7 @@ import { Story } from './Story';
 import { SequenceNode } from './SequenceNode';
 import { Choice } from './Choice';
 import { RouterNode } from './RouterNode';
+import { File } from '@babel/types';
 
 @Entity()
 export class Sequence {
@@ -25,6 +26,12 @@ export class Sequence {
 
   @ManyToOne(() => Story, { onDelete: 'CASCADE' })
   story: Story;
+
+  @Column({ type: 'json', nullable: true })
+  enterProgram: File | null;
+
+  @Column({ type: 'json', nullable: true })
+  leaveProgram: File | null;
 
   @Column({ nullable: true })
   choiceId: number | null;

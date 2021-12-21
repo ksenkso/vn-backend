@@ -10,7 +10,6 @@ import { StoryModule } from './story/story.module';
 import { SequenceModule } from './sequence/sequence.module';
 import { CommandModule } from 'nestjs-command';
 import { UserCommand } from './seed/users/command';
-import { ActionModule } from './action/action.module';
 import { ChoiceModule } from './choice/choice.module';
 import { StateModule } from './state/state.module';
 import { RouterModule } from './router/router.module';
@@ -29,7 +28,6 @@ import { RouterModule } from './router/router.module';
     StoryModule,
     SequenceModule,
     CommandModule,
-    ActionModule,
     ChoiceModule,
     StateModule,
     RouterModule,

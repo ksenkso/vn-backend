@@ -1,7 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { SequenceService } from './sequence.service';
-import { CreateSequenceDto } from '../story/dto/sequence.dto';
+import {
+  CreateSequenceDto,
+  UpdateSequenceDto,
+} from '../story/dto/sequence.dto';
 import { CreateNodeDto } from './dto/sequence-node.dto';
+import { ProgramPipe } from 'src/pipes/program/program.pipe';
 
 @Controller('sequence')
 export class SequenceController {
@@ -13,8 +17,16 @@ export class SequenceController {
   }
 
   @Post()
-  create(@Body() sequenceDto: CreateSequenceDto) {
+  create(@Body(ProgramPipe) sequenceDto: CreateSequenceDto) {
     return this.sequenceService.create(sequenceDto);
+  }
+
+  @Patch('/:id')
+  update(
+    @Param('id') sequenceId: number,
+    @Body(ProgramPipe) sequenceDto: UpdateSequenceDto,
+  ) {
+    return this.sequenceService.update(sequenceId, sequenceDto);
   }
 
   @Post('/:id/add')
