@@ -13,6 +13,7 @@ import { UserCommand } from './seed/users/command';
 import { ChoiceModule } from './choice/choice.module';
 import { StateModule } from './state/state.module';
 import { RouterModule } from './router/router.module';
+import { NodeModule } from './node/node.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RouterModule } from './router/router.module';
     ChoiceModule,
     StateModule,
     RouterModule,
+    NodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, UserCommand],
