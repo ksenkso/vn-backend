@@ -6,7 +6,6 @@ import {
 import { Sequence } from '../entity/Sequence';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
-import { CreateNodeDto } from './dto/sequence-node.dto';
 import { SequenceNode } from '../entity/SequenceNode';
 import { Story } from '../entity/Story';
 
@@ -40,19 +39,9 @@ export class SequenceService {
     return newSequence;
   }
 
-  async addNode(sequenceId: number, nodeDto: CreateNodeDto) {
-    const node = this.nodes.create(nodeDto);
-    node.sequenceId = sequenceId;
-
-    return this.nodes.save(node);
-  }
-
   async get(sequenceId: number): Promise<Sequence | void> {
     const nodesQuery = this.nodes.find({
       where: { sequenceId },
-      order: {
-        order: 'ASC',
-      },
     });
     const sequenceQuery = this.sequences.findOne(sequenceId, {
       relations: ['choice', 'choice.options'],
@@ -61,17 +50,33 @@ export class SequenceService {
       .then(([nodes, sequence]) => {
         return {
           ...sequence,
-          nodes,
+          nodes: SequenceService.linkNodes(nodes),
         } as Sequence;
       })
       .catch((error) => {
         if (error instanceof QueryFailedError) {
           console.log(error.query, error.parameters);
+        } else {
+          throw error;
         }
       });
   }
 
   async update(id: number, sequenceDto: UpdateSequenceDto) {
     return this.sequences.update(id, sequenceDto);
+  }
+
+  private static linkNodes(nodes: SequenceNode[]): SequenceNode[] {
+    if (!nodes.length) return [];
+
+    nodes.sort((a, b) => {
+      if (a.prevId === null) return -1;
+      if (b.prevId === null) return 1;
+      if (a.nextId === b.id) return -1;
+      if (a.prevId === b.id) return 1;
+      return 1;
+    });
+
+    return nodes;
   }
 }

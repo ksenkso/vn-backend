@@ -4,7 +4,6 @@ import {
   CreateSequenceDto,
   UpdateSequenceDto,
 } from '../story/dto/sequence.dto';
-import { CreateNodeDto } from './dto/sequence-node.dto';
 import { ProgramPipe } from 'src/pipes/program/program.pipe';
 
 @Controller('sequence')
@@ -27,10 +26,5 @@ export class SequenceController {
     @Body(ProgramPipe) sequenceDto: UpdateSequenceDto,
   ) {
     return this.sequenceService.update(sequenceId, sequenceDto);
-  }
-
-  @Post('/:id/add')
-  addNode(@Param('id') sequenceId: number, @Body() nodeDto: CreateNodeDto) {
-    return this.sequenceService.addNode(sequenceId, nodeDto);
   }
 }

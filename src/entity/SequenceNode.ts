@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import {
   SequenceNodeDescription,
   SequenceNodeType,
@@ -17,13 +24,24 @@ export class SequenceNode {
   description: SequenceNodeDescription;
 
   @Column()
-  order: number;
-
-  @Column()
   sequenceId: number;
 
   @ManyToOne(() => Sequence, (sequence) => sequence.nodes, {
     onDelete: 'CASCADE',
   })
   sequence: Sequence;
+
+  @Column({ nullable: true })
+  nextId: number | null;
+
+  @OneToOne(() => SequenceNode)
+  @JoinColumn()
+  next?: SequenceNode;
+
+  @Column({ nullable: true })
+  prevId: number | null;
+
+  @OneToOne(() => SequenceNode)
+  @JoinColumn()
+  prev?: SequenceNode;
 }
