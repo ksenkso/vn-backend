@@ -49,4 +49,8 @@ export class NodeService {
       );
     }
   }
+
+  get(id: number) {
+    return this.nodes.findOne(id);
+  }
 }
