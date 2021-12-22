@@ -53,4 +53,8 @@ export class ChoiceService {
 
     return this.playerChoices.save(playerChoice);
   }
+
+  get(id: number) {
+    return this.choices.findOne(id);
+  }
 }
