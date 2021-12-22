@@ -92,7 +92,15 @@ export class SequenceService {
     const sequence = await this.sequences.findOne(sequenceId);
     if (!sequence) throw new NotFoundException();
 
-    return this.runProgram(sequence, user);
+    if (sequence.leaveProgram) {
+      return this.runProgram(sequence, user);
+    }
+
+    return this.playerStates.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
   }
 
   async runProgram(sequence: Sequence, user: User) {

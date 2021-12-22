@@ -62,7 +62,7 @@ export class RouterService {
       const context = new ExecutionContext(
         state.toMap(),
         sourceSequence,
-        choice.option,
+        choice?.option,
       );
       return context.runProgram(condition.condition);
     });
