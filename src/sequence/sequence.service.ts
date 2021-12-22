@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateSequenceDto,
   UpdateSequenceDto,
@@ -8,6 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { SequenceNode } from '../entity/SequenceNode';
 import { Story } from '../entity/Story';
+import { User } from '../entity/user.entity';
+import { ExecutionContext } from '../lib/ExecutionContext';
+import { PlayerState } from '../entity/PlayerState';
+import { PlayerChoice } from '../entity/PlayerChoice';
 
 @Injectable()
 export class SequenceService {
@@ -18,6 +22,10 @@ export class SequenceService {
     private nodes: Repository<SequenceNode>,
     @InjectRepository(Story)
     private stories: Repository<Story>,
+    @InjectRepository(PlayerState)
+    private playerStates: Repository<PlayerState>,
+    @InjectRepository(PlayerChoice)
+    private playerChoices: Repository<PlayerChoice>,
   ) {}
 
   async create(sequenceDto: CreateSequenceDto): Promise<Sequence> {
@@ -78,5 +86,41 @@ export class SequenceService {
     });
 
     return nodes;
+  }
+
+  async runLeaveProgram(sequenceId: number, user: User) {
+    const sequence = await this.sequences.findOne(sequenceId);
+    if (!sequence) throw new NotFoundException();
+
+    return this.runProgram(sequence, user);
+  }
+
+  async runProgram(sequence: Sequence, user: User) {
+    const playerState = await this.playerStates.findOne({
+      where: {
+        userId: user.id,
+        storyId: sequence.storyId,
+      },
+    });
+    const playerChoice = await this.playerChoices.findOne({
+      where: {
+        choiceId: sequence.choiceId,
+        userId: user.id,
+      },
+      relations: ['choice', 'option'],
+    });
+
+    const variableMap = playerState.toMap();
+    const context = new ExecutionContext(
+      variableMap,
+      sequence,
+      playerChoice?.option,
+    );
+
+    context.runProgram(sequence.leaveProgram);
+
+    playerState.setState(variableMap);
+
+    return this.playerStates.save(playerState);
   }
 }

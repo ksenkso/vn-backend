@@ -8,6 +8,8 @@ import { SequenceService } from '../sequence/sequence.service';
 import { SequenceNode } from '../entity/SequenceNode';
 import { Choice } from '../entity/Choice';
 import { ChoiceOption } from '../entity/ChoiceOption';
+import { PlayerState } from '../entity/PlayerState';
+import { PlayerChoice } from 'src/entity/PlayerChoice';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { ChoiceOption } from '../entity/ChoiceOption';
       SequenceNode,
       Choice,
       ChoiceOption,
+      PlayerState,
+      PlayerChoice,
     ]),
   ],
   controllers: [StoryController],
