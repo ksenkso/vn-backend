@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { AuthService } from './auth.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
+import { AuthService, TokenPair } from './auth.service';
 import { JwtGuard } from './jwt.guard';
 import { LocalGuard } from './local.guard';
 import { Roles } from './roles.decorator';
@@ -20,8 +28,10 @@ export class AuthController {
 
   @UseGuards(LocalGuard)
   @Post('login')
-  async login(@Req() req) {
-    return this.authService.login(req.user);
+  async login(@Req() req, @Res() res: Response) {
+    const tokens = await this.authService.login(req.user);
+
+    return AuthController.sendAuthData(res, tokens);
   }
 
   @UseGuards(JwtGuard)
@@ -30,14 +40,21 @@ export class AuthController {
     return req.user;
   }
 
-  @Get('refresh')
-  async refresh(
-    @Req() req: Request,
-    @Query('refreshToken') refreshToken: string,
-  ) {
-    return this.authService.refresh(
-      req.header('Authorization').slice('Bearer '.length),
-      refreshToken,
-    );
+  @Post('refresh')
+  async refresh(@Req() req: Request, @Res() res: Response) {
+    try {
+      const tokens = await this.authService.refresh(req.cookies.refreshToken);
+
+      return AuthController.sendAuthData(res, tokens);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
+  }
+
+  private static sendAuthData(response: Response, tokens: TokenPair) {
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+    });
+    return response.send({ accessToken: tokens.accessToken });
   }
 }

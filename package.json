@@ -36,6 +36,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "cookie-parser": "^1.4.6",
     "mongodb": "^3.6.10",
     "nestjs-command": "^2.0.0",
     "passport": "^0.4.1",
@@ -51,7 +52,8 @@
   "devDependencies": {
     "@nestjs/cli": "^7.5.6",
     "@nestjs/schematics": "^7.2.7",
-    "@nestjs/testing": "^7.6.13",
+    "@nestjs/testing": "^7.6.18",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.31",

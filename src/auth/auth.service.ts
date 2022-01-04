@@ -1,14 +1,24 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { User } from '../entity/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RefreshToken } from '../entity/RefreshToken';
+
+export interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    @InjectRepository(RefreshToken)
+    private refreshTokens: Repository<RefreshToken>,
   ) {}
 
   async signUp(req: Request): Promise<User> {
@@ -27,41 +37,40 @@ export class AuthService {
     return this.createPayload(user);
   }
 
-  async refresh(accessToken: string, refreshToken?: string) {
-    const accessPayload = this.jwtService.verify(accessToken, {
-      ignoreExpiration: true,
-    }) as any;
-    let refreshPayload;
-    try {
-      refreshPayload = this.jwtService.verify(refreshToken) as any;
-    } catch (err) {
-      if (err.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('Refresh token has expired');
+  async refresh(refreshToken: string) {
+    const token = await this.refreshTokens.findOne(
+      { token: refreshToken },
+      { relations: ['user'] },
+    );
+    if (token) {
+      await this.refreshTokens.delete(token);
+      if (this.jwtService.verify(refreshToken)) {
+        return this.createPayload(token.user);
       }
     }
-    if (accessPayload.sub !== refreshPayload.sub) {
-      throw new UnauthorizedException({
-        name: 'InvalidSubjectError',
-        message: 'ids for refresh token and access token should be equal',
-      });
-    }
-    const { username, sub } = accessPayload;
-    return this.createPayload({ username, id: sub });
+
+    throw new Error('Refresh token is invalid');
   }
 
-  private async createPayload(
-    user: any,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  private async createPayload(user: any): Promise<TokenPair> {
+    const refreshToken = this.jwtService.sign(
+      { sub: user.id },
+      { expiresIn: '30 days' },
+    );
+
+    const tokenRecord = this.refreshTokens.create({
+      token: refreshToken,
+      userId: user.id,
+    });
+    await this.refreshTokens.save(tokenRecord);
+
     return {
       accessToken: this.jwtService.sign({
         sub: user.id,
         username: user.username,
         roles: user.roles,
       }),
-      refreshToken: this.jwtService.sign(
-        { sub: user.id },
-        { expiresIn: '30 days' },
-      ),
+      refreshToken,
     };
   }
 }

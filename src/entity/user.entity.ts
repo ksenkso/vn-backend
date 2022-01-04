@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { PlayerState } from './PlayerState';
 import { PlayerChoice } from './PlayerChoice';
+import { RefreshToken } from './RefreshToken';
 
 @Entity()
 export class User {
@@ -41,6 +42,9 @@ export class User {
 
   @OneToMany(() => PlayerChoice, (playerChoice) => playerChoice.user)
   playerChoices: PlayerChoice[];
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 
   @BeforeUpdate()
   async updatePassword(...args: any) {
