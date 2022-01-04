@@ -15,7 +15,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-  app.use(cookieParser());
+  app.use(cookieParser(process.env.COOKIE_SECRET));
   await app.listen(3000);
 }
 bootstrap();

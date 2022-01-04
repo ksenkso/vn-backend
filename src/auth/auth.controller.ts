@@ -43,7 +43,9 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
     try {
-      const tokens = await this.authService.refresh(req.cookies.refreshToken);
+      const tokens = await this.authService.refresh(
+        req.signedCookies.refreshToken,
+      );
 
       return AuthController.sendAuthData(res, tokens);
     } catch (error) {
@@ -54,6 +56,9 @@ export class AuthController {
   private static sendAuthData(response: Response, tokens: TokenPair) {
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
+      secure: true,
+      signed: true,
+      domain: process.env.DOMAIN,
     });
     return response.send({ accessToken: tokens.accessToken });
   }
