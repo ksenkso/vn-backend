@@ -18,6 +18,10 @@ export class StoryService {
     private sequenceService: SequenceService,
   ) {}
 
+  getAll(): Promise<Story[]> {
+    return this.storyRepository.find();
+  }
+
   getById(id: number): Promise<Story | undefined> {
     return this.storyRepository.findOne(id);
   }

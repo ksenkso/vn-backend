@@ -12,34 +12,37 @@ import {
 } from '../sequence/dto/sequence-node.dto';
 import { Sequence } from './Sequence';
 
-@Entity()
-export class SequenceNode {
-  @PrimaryGeneratedColumn()
+interface ISequenceNode {
   id: number;
-
-  @Column()
   type: SequenceNodeType;
-
-  @Column({ type: 'json' })
   description: SequenceNodeDescription;
-
-  @Column()
   sequenceId: number;
+  nextId: number | null;
+  prevId: number | null;
+}
+
+@Entity()
+export class SequenceNode implements ISequenceNode {
+  @PrimaryGeneratedColumn() id: number;
+
+  @Column() type: SequenceNodeType;
+
+  @Column({ type: 'json' }) description: SequenceNodeDescription;
+
+  @Column() sequenceId: number;
 
   @ManyToOne(() => Sequence, (sequence) => sequence.nodes, {
     onDelete: 'CASCADE',
   })
   sequence: Sequence;
 
-  @Column({ nullable: true })
-  nextId: number | null;
+  @Column({ nullable: true }) nextId: number | null;
 
   @OneToOne(() => SequenceNode)
   @JoinColumn()
   next?: SequenceNode;
 
-  @Column({ nullable: true })
-  prevId: number | null;
+  @Column({ nullable: true }) prevId: number | null;
 
   @OneToOne(() => SequenceNode)
   @JoinColumn()

@@ -15,6 +15,11 @@ import { CreateSequenceDto } from './dto/sequence.dto';
 export class StoryController {
   constructor(private storyService: StoryService) {}
 
+  @Get()
+  getAll() {
+    return this.storyService.getAll();
+  }
+
   @Post()
   create(@Body() storyDto: CreateStoryDto) {
     return this.storyService.create(storyDto);
