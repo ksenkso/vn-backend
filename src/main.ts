@@ -14,7 +14,10 @@ async function bootstrap() {
     httpsOptions,
   });
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+  app.enableCors({
+    origin: process.env.CLIENT_ORIGIN,
+    credentials: true,
+  });
   app.use(cookieParser(process.env.COOKIE_SECRET));
   await app.listen(3000);
 }
