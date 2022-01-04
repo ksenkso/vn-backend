@@ -73,4 +73,10 @@ export class AuthService {
       refreshToken,
     };
   }
+
+  async logout(refreshToken: string): Promise<void> {
+    await this.refreshTokens.delete({
+      token: refreshToken,
+    });
+  }
 }

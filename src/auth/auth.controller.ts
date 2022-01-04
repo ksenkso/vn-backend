@@ -34,6 +34,11 @@ export class AuthController {
     return AuthController.sendAuthData(res, tokens);
   }
 
+  @Post('logout')
+  async logout(@Req() req: Request) {
+    return this.authService.logout(req.signedCookies.refreshToken);
+  }
+
   @UseGuards(JwtGuard)
   @Get('profile')
   getProfile(@Req() req) {
@@ -59,6 +64,8 @@ export class AuthController {
       secure: true,
       signed: true,
       domain: process.env.DOMAIN,
+      sameSite: 'none',
+      maxAge: 30 * 24 * 60 * 60,
     });
     return response.send({ accessToken: tokens.accessToken });
   }
