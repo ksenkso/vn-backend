@@ -43,6 +43,7 @@ export type GraphSequence = Pick<ISequence, 'id' | 'slug'> & {
   router: GraphRouterNode | null;
 };
 export type GraphRouterNode = {
+  id: number;
   conditions: GraphRouteCondition[];
 };
 export type GraphRouteCondition = Pick<IRouteCondition, 'sequenceId'>;

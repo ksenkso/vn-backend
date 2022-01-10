@@ -141,6 +141,7 @@ export class SequenceService {
       .select([
         'sequence.id',
         'sequence.slug',
+        'router.id',
         'router.sequenceId',
         'conditions.sequenceId',
       ])
