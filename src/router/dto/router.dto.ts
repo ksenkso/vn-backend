@@ -1,6 +1,6 @@
 export class CreateRouterDto {
   sequenceId: number;
-  routes?: Omit<CreateRouteConditionDto, 'routerId'>[];
+  conditions?: Omit<CreateRouteConditionDto, 'routerId'>[];
 }
 
 export class CreateRouteConditionDto {

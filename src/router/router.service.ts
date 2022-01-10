@@ -28,12 +28,19 @@ export class RouterService {
   ) {}
 
   async create(routerDto: CreateRouterDto) {
-    const router = this.routers.create(routerDto);
+    let conditions;
+    if (routerDto.conditions) {
+      conditions = routerDto.conditions;
+      delete routerDto.conditions;
+    }
+    const router = this.routers.create(
+      routerDto as Omit<CreateRouterDto, 'conditions'>,
+    );
     const newRouter = await this.routers.save(router);
 
-    if (routerDto.routes) {
-      const conditions = this.conditions.create(
-        routerDto.routes.map((route) => {
+    if (conditions) {
+      const newConditions = this.conditions.create(
+        conditions.map((route) => {
           return {
             condition: parse(route.condition) as File,
             routerId: newRouter.id,
@@ -41,7 +48,7 @@ export class RouterService {
           };
         }),
       );
-      newRouter.conditions = await this.conditions.save(conditions);
+      newRouter.conditions = await this.conditions.save(newConditions);
     }
 
     return newRouter;
