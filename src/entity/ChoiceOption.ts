@@ -8,7 +8,7 @@ import {
 import { Choice } from './Choice';
 import { PlayerChoice } from './PlayerChoice';
 
-interface IChoiceOption {
+export interface IChoiceOption {
   id: number;
   title: string;
   slug: string;

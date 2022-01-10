@@ -7,7 +7,7 @@ export enum InternalVariables {
   Sequence = 'sequence',
 }
 
-interface IStoryState {
+export interface IStoryState {
   id: number;
   state: Record<string, Variable>;
   storyId: number;

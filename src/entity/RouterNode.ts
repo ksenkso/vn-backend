@@ -9,7 +9,7 @@ import {
 import { Sequence } from './Sequence';
 import { RouteCondition } from './RouteCondition';
 
-interface IRouterNode {
+export interface IRouterNode {
   id: number;
   sequenceId: number;
   sequence: Sequence;

@@ -13,7 +13,7 @@ import { Choice } from './Choice';
 import { RouterNode } from './RouterNode';
 import { File } from '@babel/types';
 
-interface ISequence {
+export interface ISequence {
   id: number;
   slug: string;
   storyId: number;

@@ -1,7 +1,7 @@
 import { User } from './user.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-interface IRole {
+export interface IRole {
   id: number;
   name: string;
   users: User[];

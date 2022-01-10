@@ -1,3 +1,6 @@
+import { IRouteCondition } from '../../entity/RouteCondition';
+import { ISequence } from '../../entity/Sequence';
+
 export enum SequenceNodeType {
   Text,
   Sound,
@@ -35,3 +38,11 @@ export class SoundNodeDescription {
 export class AnimationNodeDescription {
   order: number;
 }
+
+export type GraphSequence = Pick<ISequence, 'id' | 'slug'> & {
+  router: GraphRouterNode | null;
+};
+export type GraphRouterNode = {
+  conditions: GraphRouteCondition[];
+};
+export type GraphRouteCondition = Pick<IRouteCondition, 'sequenceId'>;

@@ -12,6 +12,7 @@ import { User } from '../entity/user.entity';
 import { ExecutionContext } from '../lib/ExecutionContext';
 import { PlayerState } from '../entity/PlayerState';
 import { PlayerChoice } from '../entity/PlayerChoice';
+import { GraphSequence } from './dto/sequence-node.dto';
 
 @Injectable()
 export class SequenceService {
@@ -132,12 +133,18 @@ export class SequenceService {
     return this.playerStates.save(playerState);
   }
 
-  forStoryId(storyId: number) {
-    return this.sequences.find({
-      select: ['id', 'slug'],
-      where: {
-        storyId,
-      },
-    });
+  forStoryId(storyId: number): Promise<GraphSequence[]> {
+    return this.sequences
+      .createQueryBuilder('sequence')
+      .leftJoinAndSelect('sequence.router', 'router')
+      .leftJoinAndSelect('router.conditions', 'conditions')
+      .select([
+        'sequence.id',
+        'sequence.slug',
+        'router.sequenceId',
+        'conditions.sequenceId',
+      ])
+      .where({ storyId })
+      .getMany();
   }
 }

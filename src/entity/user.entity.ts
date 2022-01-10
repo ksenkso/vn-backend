@@ -13,7 +13,7 @@ import { PlayerState } from './PlayerState';
 import { PlayerChoice } from './PlayerChoice';
 import { RefreshToken } from './RefreshToken';
 
-interface IUser {
+export interface IUser {
   id: number;
   username: string;
   password: string;

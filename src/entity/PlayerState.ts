@@ -9,7 +9,7 @@ import { Variable } from '../lib/types';
 import { User } from './user.entity';
 import { Story } from './Story';
 
-interface IPlayerState {
+export interface IPlayerState {
   id: number;
   state: Record<string, Variable>;
   userId: number;

@@ -9,7 +9,7 @@ import { Choice } from './Choice';
 import { ChoiceOption } from './ChoiceOption';
 import { User } from './user.entity';
 
-interface IPlayerChoice {
+export interface IPlayerChoice {
   id: number;
   choiceId: number;
   choice: Choice;

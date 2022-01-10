@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ChoiceOption } from './ChoiceOption';
 import { PlayerChoice } from './PlayerChoice';
 
-interface IChoice {
+export interface IChoice {
   id: number;
   title: string;
   slug?: string;

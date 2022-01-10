@@ -12,7 +12,7 @@ import {
 } from '../sequence/dto/sequence-node.dto';
 import { Sequence } from './Sequence';
 
-interface ISequenceNode {
+export interface ISequenceNode {
   id: number;
   type: SequenceNodeType;
   description: SequenceNodeDescription;

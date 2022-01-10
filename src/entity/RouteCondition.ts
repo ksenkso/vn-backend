@@ -3,7 +3,7 @@ import { RouterNode } from './RouterNode';
 import { Sequence } from './Sequence';
 import { File } from '@babel/types';
 
-interface IRouteCondition {
+export interface IRouteCondition {
   id: number;
   condition: File;
   routerId: number;

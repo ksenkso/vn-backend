@@ -10,7 +10,7 @@ import { User } from './user.entity';
 import { Sequence } from './Sequence';
 import { PlayerState } from './PlayerState';
 
-interface IStory {
+export interface IStory {
   id: number;
   name: string;
   owner: User;
