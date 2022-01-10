@@ -131,4 +131,13 @@ export class SequenceService {
 
     return this.playerStates.save(playerState);
   }
+
+  forStoryId(storyId: number) {
+    return this.sequences.find({
+      select: ['id', 'slug'],
+      where: {
+        storyId,
+      },
+    });
+  }
 }

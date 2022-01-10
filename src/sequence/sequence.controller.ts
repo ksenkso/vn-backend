@@ -27,6 +27,11 @@ export class SequenceController {
     return this.sequenceService.get(sequenceId);
   }
 
+  @Get('/forStory/:storyId')
+  getForStory(@Param('storyId') storyId: number) {
+    return this.sequenceService.forStoryId(storyId);
+  }
+
   @Post()
   create(@Body(ProgramPipe) sequenceDto: CreateSequenceDto) {
     return this.sequenceService.create(sequenceDto);
