@@ -65,7 +65,7 @@ export class AuthController {
       signed: true,
       domain: process.env.DOMAIN,
       sameSite: 'none',
-      maxAge: 30 * 24 * 60 * 60,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return response.send({ accessToken: tokens.accessToken });
   }

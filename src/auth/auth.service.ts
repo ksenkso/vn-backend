@@ -65,11 +65,14 @@ export class AuthService {
     await this.refreshTokens.save(tokenRecord);
 
     return {
-      accessToken: this.jwtService.sign({
-        sub: user.id,
-        username: user.username,
-        roles: user.roles,
-      }),
+      accessToken: this.jwtService.sign(
+        {
+          sub: user.id,
+          username: user.username,
+          roles: user.roles,
+        },
+        { expiresIn: '10m' },
+      ),
       refreshToken,
     };
   }
