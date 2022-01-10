@@ -13,35 +13,40 @@ import { Choice } from './Choice';
 import { RouterNode } from './RouterNode';
 import { File } from '@babel/types';
 
-@Entity()
-export class Sequence {
-  @PrimaryGeneratedColumn()
+interface ISequence {
   id: number;
-
-  @Column()
   slug: string;
-
-  @Column({ nullable: true })
   storyId: number;
-
-  @ManyToOne(() => Story, { onDelete: 'CASCADE' })
   story: Story;
-
-  @Column({ type: 'json', nullable: true })
   enterProgram: File | null;
-
-  @Column({ type: 'json', nullable: true })
   leaveProgram: File | null;
-
-  @Column({ nullable: true })
   choiceId: number | null;
+  choice: Choice;
+  nodes: SequenceNode[];
+  router: RouterNode;
+}
+
+@Entity()
+export class Sequence implements ISequence {
+  @PrimaryGeneratedColumn() id: number;
+
+  @Column() slug: string;
+
+  @Column({ nullable: true }) storyId: number;
+
+  @ManyToOne(() => Story, { onDelete: 'CASCADE' }) story: Story;
+
+  @Column({ type: 'json', nullable: true }) enterProgram: File | null;
+
+  @Column({ type: 'json', nullable: true }) leaveProgram: File | null;
+
+  @Column({ nullable: true }) choiceId: number | null;
 
   @OneToOne(() => Choice)
   @JoinColumn()
   choice: Choice;
 
-  @OneToMany(() => SequenceNode, (node) => node.sequence)
-  nodes: SequenceNode[];
+  @OneToMany(() => SequenceNode, (node) => node.sequence) nodes: SequenceNode[];
 
   @OneToOne(() => RouterNode, (routerNode) => routerNode.sequence)
   router: RouterNode;

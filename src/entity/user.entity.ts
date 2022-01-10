@@ -13,8 +13,24 @@ import { PlayerState } from './PlayerState';
 import { PlayerChoice } from './PlayerChoice';
 import { RefreshToken } from './RefreshToken';
 
+interface IUser {
+  id: number;
+  username: string;
+  password: string;
+  roles: Role[];
+  states: PlayerState[];
+  playerChoices: PlayerChoice[];
+  refreshTokens: RefreshToken[];
+
+  updatePassword(...args: any): Promise<void>;
+
+  comparePassword(password): Promise<any>;
+
+  withoutPassword(): { roles: any; id: any; username: any };
+}
+
 @Entity()
-export class User {
+export class User implements IUser {
   static async hashPassword(password: string) {
     if (!password) {
       throw new Error("Password shouldn't be an empty string.");
@@ -24,21 +40,17 @@ export class User {
     }
   }
 
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() id: number;
 
-  @Column()
-  username: string;
+  @Column() username: string;
 
-  @Column()
-  password: string;
+  @Column() password: string;
 
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];
 
-  @OneToMany(() => PlayerState, (state) => state.user)
-  states: PlayerState[];
+  @OneToMany(() => PlayerState, (state) => state.user) states: PlayerState[];
 
   @OneToMany(() => PlayerChoice, (playerChoice) => playerChoice.user)
   playerChoices: PlayerChoice[];

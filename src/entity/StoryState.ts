@@ -7,22 +7,29 @@ export enum InternalVariables {
   Sequence = 'sequence',
 }
 
+interface IStoryState {
+  id: number;
+  state: Record<string, Variable>;
+  storyId: number;
+  story: Story;
+
+  toMap(): Map<string, Variable>;
+
+  setState(variableMap: Map<string, Variable>): void;
+}
+
 @Entity()
-export class StoryState {
+export class StoryState implements IStoryState {
   // add state validation
   static readonly INTERNAL_NAMES = new Set(Object.values(InternalVariables));
 
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() id: number;
 
-  @Column({ type: 'json' })
-  state: Record<string, Variable>;
+  @Column({ type: 'json' }) state: Record<string, Variable>;
 
-  @Column()
-  storyId: number;
+  @Column() storyId: number;
 
-  @ManyToOne(() => Story, (story) => story.states)
-  story: Story;
+  @ManyToOne(() => Story, (story) => story.states) story: Story;
 
   toMap(): Map<string, Variable> {
     return new Map(

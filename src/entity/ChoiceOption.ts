@@ -8,19 +8,24 @@ import {
 import { Choice } from './Choice';
 import { PlayerChoice } from './PlayerChoice';
 
-@Entity()
-export class ChoiceOption {
-  @PrimaryGeneratedColumn()
+interface IChoiceOption {
   id: number;
-
-  @Column({ nullable: true })
   title: string;
-
-  @Column()
   slug: string;
-
-  @Column()
   choiceId: number;
+  choice: Choice;
+  playerChoices: PlayerChoice[];
+}
+
+@Entity()
+export class ChoiceOption implements IChoiceOption {
+  @PrimaryGeneratedColumn() id: number;
+
+  @Column({ nullable: true }) title: string;
+
+  @Column() slug: string;
+
+  @Column() choiceId: number;
 
   @ManyToOne(() => Choice, (choice) => choice.options, {
     onDelete: 'CASCADE',

@@ -1,17 +1,26 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { OneToMany } from 'typeorm';
-import { OneToOne } from 'typeorm';
-import { JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Sequence } from './Sequence';
 import { RouteCondition } from './RouteCondition';
 
-@Entity()
-export class RouterNode {
-  @PrimaryGeneratedColumn()
+interface IRouterNode {
   id: number;
-
-  @Column()
   sequenceId: number;
+  sequence: Sequence;
+  conditions: RouteCondition[];
+}
+
+@Entity()
+export class RouterNode implements IRouterNode {
+  @PrimaryGeneratedColumn() id: number;
+
+  @Column() sequenceId: number;
 
   @OneToOne(() => Sequence, (sequence) => sequence.router)
   @JoinColumn()
