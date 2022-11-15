@@ -29,7 +29,11 @@
 ## Installation
 
 ```bash
-$ npm install
+npm install
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout vn-backend.key -out vn-backend.crt
+sudo chmod +r vn-backend.key
+sudo chmod +r vn-backend.crt
+cp .env.example .env
 ```
 
 ## Running the app
