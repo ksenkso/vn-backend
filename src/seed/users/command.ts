@@ -1,6 +1,6 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../slices/users/users.service';
 
 @Injectable()
 export class UserCommand {

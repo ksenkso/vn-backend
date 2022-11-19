@@ -9,7 +9,7 @@ import {
 import {
   SequenceNodeDescription,
   SequenceNodeType,
-} from '../sequence/dto/sequence-node.dto';
+} from '../slices/sequence/dto/sequence-node.dto';
 import { Sequence } from './Sequence';
 
 export interface ISequenceNode {
