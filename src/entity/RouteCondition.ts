@@ -23,10 +23,14 @@ export class RouteCondition implements IRouteCondition {
 
   @Column() routerId: number;
 
-  @ManyToOne(() => RouterNode, (router) => router.conditions)
+  @ManyToOne(() => RouterNode, (router) => router.conditions, {
+    onDelete: 'CASCADE',
+  })
   router: RouterNode;
 
   @Column() sequenceId: number;
 
-  @ManyToOne(() => Sequence) sequence: Sequence;
+  @ManyToOne(() => Sequence, {
+    onDelete: 'CASCADE',
+  }) sequence: Sequence;
 }

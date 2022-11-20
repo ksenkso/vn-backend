@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateNodeDto, DisconnectNodesDto } from 'src/slices/sequence/dto/sequence-node.dto';
+import { CreateNodeDto, NodeConnectionDto } from 'src/slices/sequence/dto/sequence-node.dto';
 import { NodeService } from './node.service';
 import { DataSource } from 'typeorm';
 
@@ -28,11 +28,20 @@ export class NodeController {
   }
 
   @Patch('/disconnect')
-  disconnectNodes(@Body() disconnectNodesDto: DisconnectNodesDto) {
+  disconnectNodes(@Body() disconnectNodesDto: NodeConnectionDto) {
     return this.ds.transaction(manager => {
       return this.nodeService
         .withTransaction(manager)
         .disconnectNodes(disconnectNodesDto);
+    })
+  }
+
+  @Patch('/connect')
+  connectNodes(@Body() connectNodesDto: NodeConnectionDto) {
+    return this.ds.transaction(manager => {
+      return this.nodeService
+        .withTransaction(manager)
+        .connectNodes(connectNodesDto, manager);
     })
   }
 

@@ -10,14 +10,22 @@ import { Request } from 'express';
 import { User } from '../../entity/user.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../../auth/jwt.guard';
+import { DataSource } from 'typeorm';
 
 @Controller('router')
 export class RouterController {
-  constructor(private routerService: RouterService) {}
+  constructor(
+    private routerService: RouterService,
+    private readonly ds: DataSource,
+  ) {}
 
   @Post()
   create(@Body() routerDto: CreateRouterDto) {
-    return this.routerService.create(routerDto);
+    return this.ds.transaction(manager => {
+      return this.routerService
+        .withTransaction(manager)
+        .create(routerDto);
+    })
   }
 
   @UseGuards(JwtGuard)

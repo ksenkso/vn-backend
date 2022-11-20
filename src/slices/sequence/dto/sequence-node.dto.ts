@@ -27,7 +27,7 @@ export class UpdateNodeDto {
   description?: SequenceNodeDescription;
 }
 
-export class DisconnectNodesDto {
+export class NodeConnectionDto {
   fromId: number;
   toId: number;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { SequenceNode } from '../../entity/SequenceNode';
-import { CreateNodeDto, DisconnectNodesDto, UpdateNodeDto } from '../sequence/dto/sequence-node.dto';
+import { CreateNodeDto, NodeConnectionDto, UpdateNodeDto } from '../sequence/dto/sequence-node.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sequence } from '../../entity/Sequence';
 import { EntityNotFoundException } from '../../exceptions/EntityNotFoundException';
@@ -84,16 +84,23 @@ export class NodeService extends TransactionFor<NodeService> {
     await this.nodes.delete({ id });
   }
 
-  async connectNodes(fromId: number, toId: number) {
-    const fromNode = await this.nodeValidator.requireOne(fromId);
-    const toNode = await this.nodeValidator.requireOne(toId);
+  async connectNodes(
+    nodeConnectionDto: NodeConnectionDto,
+    manager: EntityManager
+  ) {
+    const fromNode = await this.nodeValidator.requireOne(nodeConnectionDto.fromId);
+    const toNode = await this.nodeValidator.requireOne(nodeConnectionDto.toId);
+    //
+    // if (fromNode.nextId || toNode.prevId) {
+    //
+    // }
 
-    if (fromNode.nextId || toNode.prevId) {
-
-    }
+    return this.nodeConnector
+      .withTransaction(manager)
+      .merge(fromNode, toNode);
   }
 
-  disconnectNodes(disconnectNodesDto: DisconnectNodesDto) {
+  disconnectNodes(disconnectNodesDto: NodeConnectionDto) {
     return this.nodeConnector.disconnectNodes(disconnectNodesDto);
   }
 

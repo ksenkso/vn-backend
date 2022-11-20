@@ -4,24 +4,84 @@ import { SequenceNode } from '../../entity/SequenceNode';
 import { Repository } from 'typeorm';
 import { RouterNode } from '../../entity/RouterNode';
 import { Sequence } from '../../entity/Sequence';
-import { DisconnectNodesDto } from '../sequence/dto/sequence-node.dto';
+import { NodeConnectionDto } from '../sequence/dto/sequence-node.dto';
 import { EntityNotFoundException } from '../../exceptions/EntityNotFoundException';
 import { NodesNotLinkedException } from '../../exceptions/NodesNotLinkedException';
 import { NodeRepository } from './node.repository';
+import { RouterService } from '../router/router.service';
+import { TransactionFor } from 'nest-transact';
+import { ModuleRef } from '@nestjs/core';
+import { RouteCondition } from '../../entity/RouteCondition';
+import { RouteConditionRequiredException } from '../../exceptions/RouteConditionRequiredException';
 
 @Injectable()
-export class NodeConnectorService {
+export class NodeConnectorService extends TransactionFor<NodeConnectorService> {
   constructor(
     private nodes: NodeRepository,
     @InjectRepository(Sequence)
     private sequences: Repository<Sequence>,
     @InjectRepository(RouterNode)
     private routers: Repository<RouterNode>,
+    @InjectRepository(RouteCondition)
+    private conditions: Repository<RouteCondition>,
+    private routerService: RouterService,
+    moduleRef: ModuleRef,
   ) {
+    super(moduleRef);
   }
 
-  async merge(from: SequenceNode, to: SequenceNode) {
-  //
+  async merge(from: SequenceNode, to: SequenceNode, condition?: string) {
+    // First, split nodes destination sequence between `to` node and its ancestor
+    const createdSequence = await this.disconnectNodes({ fromId: to.prevId, toId: to.id });
+    const cutSequenceId = to.sequenceId;
+
+    // Move the router from split sequence to a new one
+    let toSequenceRouter: RouterNode | null = await this.routers
+      .findOneBy({
+        sequence: {
+          id: cutSequenceId
+        }
+      });
+
+    if (!toSequenceRouter) {
+      toSequenceRouter = await this.routerService.create({ sequenceId: cutSequenceId });
+    }
+
+    createdSequence.router = toSequenceRouter;
+    await this.sequences.save(createdSequence);
+
+    let fromSequenceRouter = await this.routers
+      .findOneBy({
+        sequence: {
+          id: from.sequenceId,
+        }
+      });
+
+    if (!fromSequenceRouter) {
+      fromSequenceRouter = await this.routerService.create({ sequenceId: from.sequenceId });
+    }
+
+    const conditionsCount = await this.conditions.count({
+      where: {
+        routerId: fromSequenceRouter.id,
+      }
+    });
+
+    if (conditionsCount) {
+      if (!condition) {
+        throw new RouteConditionRequiredException();
+      }
+      await this.routerService.addRoute()
+    }
+
+    // Replace the router of cut sequence with a new one
+    // with default route to new sequence
+    await this.routerService.createWithDefaultRoute(
+      cutSequenceId,
+      createdSequence.id,
+    );
+
+    return createdSequence;
   }
 
   async push(from: SequenceNode, to: SequenceNode) {
@@ -32,7 +92,7 @@ export class NodeConnectorService {
   //
   }
 
-  async disconnectNodes(dto: DisconnectNodesDto) {
+  async disconnectNodes(dto: NodeConnectionDto) {
     const fromNode = await this.nodes.findOneBy({ id: dto.fromId });
     const toNode = await this.nodes.findOneBy({ id: dto.toId });
 
