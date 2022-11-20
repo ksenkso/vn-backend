@@ -1,18 +1,16 @@
-import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { SequenceNode } from '../../entity/SequenceNode';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CreateNodeDto, UpdateNodeDto } from '../sequence/dto/sequence-node.dto';
 import { NodeAlreadyLinkedException } from '../../exceptions/NodeAlreadyLinkedException';
 import { DtoValidator, IDtoValidator } from '../../lib/DtoValidator';
+import { NodeRepository } from './node.repository';
 
 @Injectable()
 export class NodeValidator implements IDtoValidator<CreateNodeDto, UpdateNodeDto> {
   public readonly validator: DtoValidator<SequenceNode>;
 
   constructor(
-    @InjectRepository(SequenceNode)
-    private repo: Repository<SequenceNode>,
+    private repo: NodeRepository,
   ) {
     this.validator = new DtoValidator(repo);
   }

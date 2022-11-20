@@ -14,14 +14,14 @@ import { SequenceValidator } from './sequence.validator';
 import { RouterNode } from '../../entity/RouterNode';
 import { ModuleRef } from '@nestjs/core';
 import { TransactionFor } from 'nest-transact';
+import { NodeRepository } from '../node/node.repository';
 
 @Injectable()
 export class SequenceService extends TransactionFor<SequenceService> {
   constructor(
     @InjectRepository(Sequence)
     private sequences: Repository<Sequence>,
-    @InjectRepository(SequenceNode)
-    private nodes: Repository<SequenceNode>,
+    private nodes: NodeRepository,
     @InjectRepository(Story)
     private stories: Repository<Story>,
     @InjectRepository(PlayerState)
