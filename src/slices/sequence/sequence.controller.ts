@@ -17,10 +17,14 @@ import { ProgramPipe } from 'src/pipes/program/program.pipe';
 import { Request } from 'express';
 import { User } from '../../entity/user.entity';
 import { JwtGuard } from '../../auth/jwt.guard';
+import { DataSource } from 'typeorm';
 
 @Controller('sequence')
 export class SequenceController {
-  constructor(private sequenceService: SequenceService) {}
+  constructor(
+    private sequenceService: SequenceService,
+    private readonly ds: DataSource,
+  ) {}
 
   @Get('/:id')
   get(@Param('id') sequenceId: number) {
@@ -34,7 +38,9 @@ export class SequenceController {
 
   @Post()
   create(@Body(ProgramPipe) sequenceDto: CreateSequenceDto) {
-    return this.sequenceService.create(sequenceDto);
+    return this.ds.transaction(manager => {
+      return this.sequenceService.withTransaction(manager).create(sequenceDto);
+    })
   }
 
   @Patch('/:id')

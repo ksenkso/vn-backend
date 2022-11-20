@@ -9,7 +9,6 @@ export class UserCommand {
   @Command({
     command: 'seed:users',
     describe: 'create default users',
-    autoExit: true, // defaults to `true`, but you can use `false` if you need more control
   })
   async create() {
     return this.userService.create('root', 'root');

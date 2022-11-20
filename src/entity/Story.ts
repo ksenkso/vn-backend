@@ -1,10 +1,10 @@
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinColumn, ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { User } from './user.entity';
 import { Sequence } from './Sequence';
@@ -25,7 +25,7 @@ export class Story implements IStory {
 
   @Column() name: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   owner: User;
 

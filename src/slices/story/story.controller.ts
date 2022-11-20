@@ -1,33 +1,32 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateStoryDto, UpdateStoryDto } from './dto/story.dto';
 import { StoryService } from './story.service';
-import { CreateSequenceDto } from './dto/sequence.dto';
+import { JwtGuard } from '../../auth/jwt.guard';
+import { Request } from 'express';
+import { User } from '../../entity/user.entity';
+import { DataSource } from 'typeorm';
 
 @Controller('story')
 export class StoryController {
-  constructor(private storyService: StoryService) {}
+  constructor(
+    private storyService: StoryService,
+    private readonly ds: DataSource,
+  ) {}
 
   @Get()
   getAll() {
     return this.storyService.getAll();
   }
 
+  @UseGuards(JwtGuard)
   @Post()
-  create(@Body() storyDto: CreateStoryDto) {
-    return this.storyService.create(storyDto);
-  }
+  create(@Req() request: Request, @Body() storyDto: CreateStoryDto) {
+    return this.ds.transaction(manager => {
+      return this.storyService
+        .withTransaction(manager)
+        .create(storyDto, request.user as User, manager);
+    })
 
-  @Post('/:id/sequence')
-  addStory(@Body() sequenceDto: CreateSequenceDto) {
-    return this.storyService.addSequence(sequenceDto);
   }
 
   @Get('/:id')

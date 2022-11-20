@@ -1,10 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateNodeDto, UnlinkNodesDto } from 'src/slices/sequence/dto/sequence-node.dto';
 import { NodeService } from './node.service';
+import { DataSource } from 'typeorm';
 
 @Controller('node')
 export class NodeController {
-  constructor(private nodeService: NodeService) {}
+  constructor(
+    private nodeService: NodeService,
+    private readonly ds: DataSource,
+  ) {}
 
   @Get('/:id')
   get(@Param('id') id: number) {
@@ -18,21 +22,29 @@ export class NodeController {
 
   @Post()
   create(@Body() createNodeDto: CreateNodeDto) {
-    return this.nodeService.create(createNodeDto);
+    return this.ds.transaction(manager => {
+      return this.nodeService.withTransaction(manager).create(createNodeDto);
+    })
   }
 
   @Patch('/unlink')
   unlink(@Body() unlinkNodesDto: UnlinkNodesDto) {
-    return this.nodeService.unlink(unlinkNodesDto);
+    return this.ds.transaction(manager => {
+      return this.nodeService.withTransaction(manager).unlink(unlinkNodesDto);
+    })
   }
 
   @Patch('/:id')
   update(@Param('id') id: number, @Body() createNodeDto: CreateNodeDto) {
-    return this.nodeService.update(id, createNodeDto);
+    return this.ds.transaction(manager => {
+      return this.nodeService.withTransaction(manager).update(id, createNodeDto);
+    })
   }
 
   @Delete('/:id')
   delete(@Param('id') id: number) {
-    return this.nodeService.delete(id);
+    return this.ds.transaction(manager => {
+      return this.nodeService.withTransaction(manager).delete(id);
+    })
   }
 }

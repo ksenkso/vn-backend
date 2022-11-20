@@ -1,8 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  CreateSequenceDto,
-  UpdateSequenceDto,
-} from '../story/dto/sequence.dto';
+import { CreateSequenceDto, UpdateSequenceDto } from '../story/dto/sequence.dto';
 import { Sequence } from '../../entity/Sequence';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -13,9 +10,13 @@ import { ExecutionContext } from '../../lib/ExecutionContext';
 import { PlayerState } from '../../entity/PlayerState';
 import { PlayerChoice } from '../../entity/PlayerChoice';
 import { GraphSequence } from './dto/sequence-node.dto';
+import { SequenceValidator } from './sequence.validator';
+import { RouterNode } from '../../entity/RouterNode';
+import { ModuleRef } from '@nestjs/core';
+import { TransactionFor } from 'nest-transact';
 
 @Injectable()
-export class SequenceService {
+export class SequenceService extends TransactionFor<SequenceService> {
   constructor(
     @InjectRepository(Sequence)
     private sequences: Repository<Sequence>,
@@ -27,23 +28,34 @@ export class SequenceService {
     private playerStates: Repository<PlayerState>,
     @InjectRepository(PlayerChoice)
     private playerChoices: Repository<PlayerChoice>,
-  ) {}
+    @InjectRepository(RouterNode)
+    private routers: Repository<RouterNode>,
+    private sequenceDtoValidator: SequenceValidator,
+    moduleRef: ModuleRef,
+  ) {
+    super(moduleRef);
+  }
 
   async create(sequenceDto: CreateSequenceDto): Promise<Sequence> {
+    await this.sequenceDtoValidator.validateCreate(sequenceDto);
+
+    return this.createWithoutValidation(sequenceDto);
+  }
+
+  async createWithoutValidation(sequenceDto: CreateSequenceDto) {
     const sequence = this.sequences.create(sequenceDto);
 
     const newSequence = await this.sequences.save(sequence);
 
-    if (sequenceDto.root !== undefined) {
+    if (sequenceDto.root) {
       await this.stories.update(
-        {
-          id: sequenceDto.storyId,
-        },
-        {
-          rootId: newSequence.id,
-        },
+        { id: sequenceDto.storyId },
+        { rootId: newSequence.id }
       );
     }
+
+    const router = this.routers.create();
+    newSequence.router = await this.routers.save(router);
 
     return newSequence;
   }
@@ -52,7 +64,8 @@ export class SequenceService {
     const nodesQuery = this.nodes.find({
       where: { sequenceId },
     });
-    const sequenceQuery = this.sequences.findOne(sequenceId, {
+    const sequenceQuery = this.sequences.findOne({
+      where: { id: sequenceId },
       relations: ['choice', 'choice.options'],
     });
     return Promise.all([nodesQuery, sequenceQuery])
@@ -89,7 +102,7 @@ export class SequenceService {
   }
 
   async runLeaveProgram(sequenceId: number, user: User) {
-    const sequence = await this.sequences.findOne(sequenceId);
+    const sequence = await this.sequences.findOneBy({ id: sequenceId });
     if (!sequence) throw new NotFoundException();
 
     if (sequence.leaveProgram) {

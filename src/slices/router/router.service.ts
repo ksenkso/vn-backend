@@ -55,7 +55,8 @@ export class RouterService {
   }
 
   async route(sequenceId: number, user: User): Promise<Sequence | undefined> {
-    const sourceSequence = await this.sequences.findOne(sequenceId, {
+    const sourceSequence = await this.sequences.findOne({
+      where: { id: sequenceId },
       relations: ['router', 'router.conditions', 'router.conditions.sequence'],
     });
     const choice = await this.playerChoices.findOne({
@@ -64,7 +65,7 @@ export class RouterService {
         userId: user.id,
       },
     });
-    const state = await this.playerStates.findOne({ userId: user.id });
+    const state = await this.playerStates.findOneBy({ userId: user.id });
     const condition = sourceSequence.router.conditions.find((condition) => {
       const context = new ExecutionContext(
         state.toMap(),

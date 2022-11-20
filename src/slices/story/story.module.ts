@@ -10,6 +10,9 @@ import { Choice } from '../../entity/Choice';
 import { ChoiceOption } from '../../entity/ChoiceOption';
 import { PlayerState } from '../../entity/PlayerState';
 import { PlayerChoice } from 'src/entity/PlayerChoice';
+import { SequenceValidator } from '../sequence/sequence.validator';
+import { RouterNode } from '../../entity/RouterNode';
+import { StoryValidator } from './story.validator';
 
 @Module({
   imports: [
@@ -17,6 +20,7 @@ import { PlayerChoice } from 'src/entity/PlayerChoice';
       Story,
       Sequence,
       SequenceNode,
+      RouterNode,
       Choice,
       ChoiceOption,
       PlayerState,
@@ -24,6 +28,6 @@ import { PlayerChoice } from 'src/entity/PlayerChoice';
     ]),
   ],
   controllers: [StoryController],
-  providers: [StoryService, SequenceService],
+  providers: [StoryService, SequenceService, SequenceValidator, StoryValidator],
 })
 export class StoryModule {}

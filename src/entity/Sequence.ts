@@ -48,6 +48,8 @@ export class Sequence implements ISequence {
 
   @OneToMany(() => SequenceNode, (node) => node.sequence) nodes: SequenceNode[];
 
-  @OneToOne(() => RouterNode, (routerNode) => routerNode.sequence)
+  @Column({ nullable: true }) routerId: number;
+
+  @ManyToOne(() => RouterNode, (routerNode) => routerNode.sequence)
   router: RouterNode;
 }

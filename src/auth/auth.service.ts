@@ -38,12 +38,12 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const token = await this.refreshTokens.findOne(
-      { token: refreshToken },
-      { relations: ['user'] },
+    const token = await this.refreshTokens.findOne({
+      where: { token: refreshToken },
+      relations: ['user'] },
     );
     if (token) {
-      await this.refreshTokens.delete(token);
+      await this.refreshTokens.delete({ id: token.id });
       if (this.jwtService.verify(refreshToken)) {
         return this.createPayload(token.user);
       }

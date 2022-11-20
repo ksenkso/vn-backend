@@ -1,59 +1,74 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { EntityManager, Repository, UpdateResult } from 'typeorm';
 import { Story } from '../../entity/Story';
 import { CreateStoryDto, UpdateStoryDto } from './dto/story.dto';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
-import { CreateSequenceDto } from './dto/sequence.dto';
 import { Sequence } from '../../entity/Sequence';
 import { SequenceService } from '../sequence/sequence.service';
+import { StoryValidator } from './story.validator';
+import { User } from '../../entity/user.entity';
+import { TransactionFor } from 'nest-transact';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
-export class StoryService {
+export class StoryService extends TransactionFor<StoryService> {
   constructor(
     @InjectRepository(Story)
-    private storyRepository: Repository<Story>,
-    @InjectRepository(Sequence)
-    private sequenceRepository: Repository<Sequence>,
+    private stories: Repository<Story>,
     private sequenceService: SequenceService,
-  ) {}
+    private storyValidator: StoryValidator,
+    moduleRef: ModuleRef,
+  ) {
+    super(moduleRef);
+  }
 
   getAll(): Promise<Story[]> {
-    return this.storyRepository.find();
+    return this.stories.find();
   }
 
   getById(id: number): Promise<Story | undefined> {
-    return this.storyRepository.findOne(id);
+    return this.stories.findOneBy({ id });
   }
 
-  create(storyDto: CreateStoryDto): Promise<Story> {
-    const story = this.storyRepository.create(storyDto);
+  public async create(
+    storyDto: CreateStoryDto,
+    user: User,
+    manager: EntityManager,
+  ) {
+    await this.storyValidator.validateCreate(storyDto);
 
-    return this.storyRepository.save(story);
+    const story = this.stories.create(storyDto);
+    story.owner = user;
+
+    const newStory = await this.stories.save(story);
+
+    newStory.root = await this.sequenceService.withTransaction(manager).createWithoutValidation({
+      storyId: newStory.id,
+      root: true,
+      slug: 'root',
+    });
+
+    return newStory;
   }
 
-  update(id: number, storyDto: UpdateStoryDto): Promise<UpdateResult> {
-    // potential bug: sequence can be in a different story, so check needed
-    return this.storyRepository.update(id, storyDto);
+  async update(id: number, storyDto: UpdateStoryDto): Promise<UpdateResult> {
+    await this.storyValidator.validateUpdate(storyDto, id);
+
+    return this.stories.update(id, storyDto);
   }
 
   delete(id: number): Promise<DeleteResult> {
-    return this.storyRepository.delete(id);
-  }
-
-  addSequence(sequenceDto: CreateSequenceDto): Promise<Sequence> {
-    const sequence = this.sequenceRepository.create(sequenceDto);
-
-    return this.sequenceRepository.save(sequence);
+    return this.stories.delete(id);
   }
 
   setRoot(storyId: number, sequenceId: number): Promise<UpdateResult> {
-    return this.storyRepository.update(storyId, { rootId: sequenceId });
+    return this.stories.update(storyId, { rootId: sequenceId });
   }
 
   async getRoot(storyId: number): Promise<Sequence | void> {
-    const story = await this.storyRepository.findOne(storyId);
+    const { rootId } = await this.stories.findOne({ select: ['rootId'], where: { id: storyId } });
 
-    return this.sequenceService.get(story.rootId);
+    return this.sequenceService.get(rootId);
   }
 }

@@ -55,6 +55,6 @@ export class ChoiceService {
   }
 
   get(id: number) {
-    return this.choices.findOne(id);
+    return this.choices.findOneBy({ id });
   }
 }
