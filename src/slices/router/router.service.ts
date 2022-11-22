@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { RouteCondition } from '../../entity/RouteCondition';
 import { CreateRouterDto } from './dto/router.dto';
 import { parse } from '@babel/parser';
-import t, { File, Program } from '@babel/types';
+import { File } from '@babel/types';
 import { Sequence } from '../../entity/Sequence';
 import { PlayerState } from '../../entity/PlayerState';
 import { PlayerChoice } from '../../entity/PlayerChoice';
@@ -113,5 +113,20 @@ export class RouterService extends TransactionFor<RouterService> {
 
   async addRoute() {
     // TODO
+  }
+
+  async getOrCreateForSequence(sequenceId: number) {
+    const router = await this.routers
+      .createQueryBuilder('router')
+      .select(['router.*'])
+      .leftJoin('sequence', 'sequence', 'sequence.routerId = router.id')
+      .where('sequence.id = :id', [sequenceId])
+      .getOne();
+
+    if (!router) {
+      return this.create({ sequenceId });
+    }
+
+    return router;
   }
 }

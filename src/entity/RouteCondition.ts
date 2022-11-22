@@ -6,6 +6,7 @@ import { File } from '@babel/types';
 export interface IRouteCondition {
   id: number;
   condition: File;
+  text: string;
   routerId: number;
   router: RouterNode;
   sequenceId: number;
@@ -20,6 +21,8 @@ export class RouteCondition implements IRouteCondition {
   @PrimaryGeneratedColumn() id: number;
 
   @Column({ type: 'json' }) condition: File;
+
+  @Column() text: string;
 
   @Column() routerId: number;
 

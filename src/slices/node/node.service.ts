@@ -90,14 +90,22 @@ export class NodeService extends TransactionFor<NodeService> {
   ) {
     const fromNode = await this.nodeValidator.requireOne(nodeConnectionDto.fromId);
     const toNode = await this.nodeValidator.requireOne(nodeConnectionDto.toId);
-    //
-    // if (fromNode.nextId || toNode.prevId) {
-    //
-    // }
+
+    if (toNode.prevId && !fromNode.nextId) {
+      return this.nodeConnector
+        .withTransaction(manager)
+        .merge(fromNode, toNode);
+    }
+
+    if (!fromNode.nextId && !toNode.prevId) {
+      return this.nodeConnector
+        .withTransaction(manager)
+        .move(fromNode, toNode);
+    }
 
     return this.nodeConnector
       .withTransaction(manager)
-      .merge(fromNode, toNode);
+      .linkNodes(fromNode, toNode);
   }
 
   disconnectNodes(disconnectNodesDto: NodeConnectionDto) {

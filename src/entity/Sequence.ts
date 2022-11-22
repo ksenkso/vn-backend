@@ -50,6 +50,6 @@ export class Sequence implements ISequence {
 
   @Column({ nullable: true }) routerId: number;
 
-  @ManyToOne(() => RouterNode, (routerNode) => routerNode.sequence)
+  @ManyToOne(() => RouterNode, (routerNode) => routerNode.sequences)
   router: RouterNode;
 }
