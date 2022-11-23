@@ -44,4 +44,17 @@ export class UsersService {
       return this.users.save(user);
     }
   }
+
+  /**
+   * TODO: real ownership check.
+   * We can implement this by checking relations between tables in a DB,
+   * or define a relation to a user in each model
+   * (two ways: define a FK or just a path for a join)
+   * @param user
+   * @param models
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  checkOwnership(user: User, models: any[]) {
+    return true;
+  }
 }

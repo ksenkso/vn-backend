@@ -29,11 +29,17 @@ export interface IUser {
   withoutPassword(): { roles: any; id: any; username: any };
 }
 
+export interface SessionStoredUser {
+  id: number;
+  username: string;
+  roles: string[];
+}
+
 @Entity()
 export class User implements IUser {
   static async hashPassword(password: string) {
     if (!password) {
-      throw new Error("Password shouldn't be an empty string.");
+      throw new Error('Password shouldn\'t be an empty string.');
     } else {
       const salt = await bcrypt.genSalt(10);
       return await bcrypt.hash(password, salt);
@@ -73,11 +79,11 @@ export class User implements IUser {
     }
   }
 
-  withoutPassword() {
+  withoutPassword(): SessionStoredUser {
     return {
       id: this.id,
       username: this.username,
-      roles: this.roles,
+      roles: this.roles.map(role => role.name),
     };
   }
 }

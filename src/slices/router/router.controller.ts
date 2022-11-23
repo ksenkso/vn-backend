@@ -9,7 +9,7 @@ import { Req } from '@nestjs/common';
 import { Request } from 'express';
 import { User } from '../../entity/user.entity';
 import { UseGuards } from '@nestjs/common';
-import { JwtGuard } from '../../auth/jwt.guard';
+import { SessionGuard } from '../../auth/session.guard';
 import { DataSource } from 'typeorm';
 
 @Controller('router')
@@ -28,7 +28,7 @@ export class RouterController {
     })
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Get('/:sequenceId')
   route(@Param('sequenceId') sequenceId: number, @Req() request: Request) {
     const user = request.user as User;

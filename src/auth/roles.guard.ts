@@ -1,15 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-function matchRoles(userRoles: string[], rolesToMatch: string[]) {
-  for (const role of rolesToMatch) {
-    if (userRoles.includes(role)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
@@ -22,9 +13,18 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     if (user) {
-      return matchRoles(roles, user.roles);
+      return RolesGuard.matchRoles(roles, user.roles);
     } else {
       return false;
     }
+  }
+
+  private static matchRoles(userRoles: string[], rolesToMatch: string[]) {
+    for (const role of rolesToMatch) {
+      if (userRoles.includes(role)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

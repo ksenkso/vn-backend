@@ -11,7 +11,7 @@ import { ChoiceService } from './choice.service';
 import { CreateChoiceDto } from './dto/choice.dto';
 import { Request } from 'express';
 import { User } from '../../entity/user.entity';
-import { JwtGuard } from '../../auth/jwt.guard';
+import { SessionGuard } from '../../auth/session.guard';
 
 @Controller('choice')
 export class ChoiceController {
@@ -27,7 +27,7 @@ export class ChoiceController {
     return this.choiceService.create(choiceDto);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Post('/:choiceId')
   createPlayerChoice(
     @Req() request: Request,

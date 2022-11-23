@@ -16,7 +16,7 @@ import {
 import { ProgramPipe } from 'src/pipes/program/program.pipe';
 import { Request } from 'express';
 import { User } from '../../entity/user.entity';
-import { JwtGuard } from '../../auth/jwt.guard';
+import { SessionGuard } from '../../auth/session.guard';
 import { DataSource } from 'typeorm';
 
 @Controller('sequence')
@@ -51,7 +51,7 @@ export class SequenceController {
     return this.sequenceService.update(sequenceId, sequenceDto);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Post('/:id/end')
   endSequence(@Req() request: Request, @Param('id') sequenceId: number) {
     return this.sequenceService.runLeaveProgram(

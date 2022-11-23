@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../slices/users/users.service';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { User } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,7 +15,6 @@ export interface TokenPair {
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
     @InjectRepository(RefreshToken)
     private refreshTokens: Repository<RefreshToken>,
   ) {}
@@ -25,56 +23,12 @@ export class AuthService {
     return this.usersService.create(req.body.username, req.body.password);
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<User | null> {
     const user = await this.usersService.findOne(username);
     if (user && (await user.comparePassword(pass))) {
-      return user.withoutPassword();
+      return user;
     }
     return null;
-  }
-
-  async login(user: any) {
-    return this.createPayload(user);
-  }
-
-  async refresh(refreshToken: string) {
-    const token = await this.refreshTokens.findOne({
-      where: { token: refreshToken },
-      relations: ['user'] },
-    );
-    if (token) {
-      await this.refreshTokens.delete({ id: token.id });
-      if (this.jwtService.verify(refreshToken)) {
-        return this.createPayload(token.user);
-      }
-    }
-
-    throw new Error('Refresh token is invalid');
-  }
-
-  private async createPayload(user: any): Promise<TokenPair> {
-    const refreshToken = this.jwtService.sign(
-      { sub: user.id },
-      { expiresIn: '30 days' },
-    );
-
-    const tokenRecord = this.refreshTokens.create({
-      token: refreshToken,
-      userId: user.id,
-    });
-    await this.refreshTokens.save(tokenRecord);
-
-    return {
-      accessToken: this.jwtService.sign(
-        {
-          sub: user.id,
-          username: user.username,
-          roles: user.roles,
-        },
-        { expiresIn: '10m' },
-      ),
-      refreshToken,
-    };
   }
 
   async logout(refreshToken: string): Promise<void> {

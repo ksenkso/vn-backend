@@ -1,25 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, Session as GetSession, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AuthService, TokenPair } from './auth.service';
-import { JwtGuard } from './jwt.guard';
+import { AuthService } from './auth.service';
+import { SessionGuard } from './session.guard';
 import { LocalGuard } from './local.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
+import { Session } from 'express-session';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {
+  }
 
   @Roles('admin')
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(SessionGuard, RolesGuard)
   @Post()
   async signUp(@Req() req: Request) {
     const user = await this.authService.signUp(req);
@@ -28,45 +22,24 @@ export class AuthController {
 
   @UseGuards(LocalGuard)
   @Post('login')
-  async login(@Req() req, @Res() res: Response) {
-    const tokens = await this.authService.login(req.user);
-
-    return AuthController.sendAuthData(res, tokens);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async login() {
   }
 
   @Post('logout')
-  async logout(@Req() req: Request) {
-    return this.authService.logout(req.signedCookies.refreshToken);
-  }
+  async logout(@Res() res: Response, @GetSession() session: Session) {
+    session.destroy(err => {
+      if (err) {
+        throw err;
+      }
 
-  @UseGuards(JwtGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
-  }
-
-  @Post('refresh')
-  async refresh(@Req() req: Request, @Res() res: Response) {
-    try {
-      const tokens = await this.authService.refresh(
-        req.signedCookies.refreshToken,
-      );
-
-      return AuthController.sendAuthData(res, tokens);
-    } catch (error) {
-      throw new UnauthorizedException(error.message);
-    }
-  }
-
-  private static sendAuthData(response: Response, tokens: TokenPair) {
-    response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      signed: true,
-      domain: process.env.DOMAIN,
-      sameSite: 'none',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      res.status(200).end();
     });
-    return response.send({ accessToken: tokens.accessToken });
+  }
+
+  @UseGuards(SessionGuard)
+  @Get('profile')
+  getProfile(@Req() req: Request) {
+    return req.user;
   }
 }
